@@ -46,13 +46,13 @@ QuickCheckExtension.java
 
 | Class | Nhiệm vụ |
 |---|---|
-| `ChecklistRepository` | Load 7 built-in JSON từ classpath, merge với `custom-checklists/` nếu có |
-| `ProgressStore` | Đọc/ghi `quickcheck-progress.json`, lưu project dir vào `MontoyaApi.persistence()`, notify change listeners |
+| `ChecklistRepository` | Load 7 built-in JSON từ classpath, merge với `custom-checklists/` và external dir nếu có |
+| `ProgressStore` | Đọc/ghi `quickcheck-progress.json`, lưu project dir + checklist dir vào `MontoyaApi.persistence()`, notify change listeners |
 | `KeyNormalizer` | Chuẩn hóa endpoint key và display path |
 | `ChecklistMerger` | Gộp items từ nhiều checklist, dedup theo `id`, sort theo severity |
 | `QuickCheckContextMenu` | Đăng ký menu item "QuickChecklist", gọi `checklistFrame.loadChecklist(request)` |
 | `ChecklistFrame` | JFrame nổi: header (method + path), content (sections + items), bottom bar (progress bar + Done btn) |
-| `SettingsTab` | Burp tab: text field + browse button để set project dir, bảng coverage endpoint |
+| `SettingsTab` | Burp tab: set project dir + external checklist dir, bảng coverage endpoint |
 
 ---
 
@@ -107,11 +107,21 @@ Severity được dùng để sort items trong mỗi section: CRITICAL → HIGH 
 
 ## Custom Checklists
 
-Đặt file JSON trong `<project-dir>/custom-checklists/`. Click **Save & Reload** để áp dụng mà không cần restart Burp.
+Có 2 cách mở rộng checklist ngoài built-in, cả hai đều hỗ trợ merge:
 
-Quy tắc merge:
-- Cùng `id` checklist → items được merge, item ngoài thắng khi trùng `id`
-- `id` hoàn toàn mới → xuất hiện thêm như một category mới
+### Cách 1 — External Directory (qua Settings tab)
+
+User set một thư mục bất kỳ chứa file JSON trong QuickCheck tab → **Load**. **Unload** để quay về mặc định. Đường dẫn được lưu vào `MontoyaApi.persistence()`, tự restore khi mở lại Burp.
+
+### Cách 2 — Project subfolder
+
+Đặt file JSON trong `<project-dir>/custom-checklists/`. Tự load khi set hoặc reload project directory.
+
+### Quy tắc merge (áp dụng cho cả hai cách)
+
+- Cùng `id` checklist → items được merge; item ngoài thắng khi trùng `id` item
+- `id` checklist hoàn toàn mới → xuất hiện thêm như một category mới
+- Thứ tự ưu tiên: built-in → `custom-checklists/` → external dir
 
 ---
 
@@ -178,20 +188,22 @@ Mỗi `ItemState` chỉ lưu `{ "done": boolean }`. File được ghi bởi back
 ### SettingsTab (Burp tab "QuickCheck")
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  Project Settings                                                           │
-│  Project directory: [D:\Testing\MerchantX          ] [Browse…] [Save & Reload] │
-│  progress file: D:\Testing\MerchantX\quickcheck-progress.json              │
-│  12 endpoint(s) tracked                                                     │
-├─────────────────────────────────────────────────────────────────────────────┤
-│  Coverage — Endpoints tracked                                  [Refresh]    │
-│  Method │ Host            │ Endpoint              │ ✓ │ Done │ Total │ Last Updated  │
-│  GET    │ api.example.com │ /users/{id}/orders    │   │  3   │  71   │ 2026-06-30... │
-│  POST   │ api.example.com │ /auth/login           │ ✓ │  71  │  71   │ 2026-06-30... │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│  Project Settings                                                                │
+│  Project directory:   [D:\Testing\MerchantX       ] [Browse…] [Save & Reload]   │
+│  progress file: D:\Testing\MerchantX\quickcheck-progress.json | 12 endpoint(s)  │
+│                                                                                  │
+│  Checklist directory: [D:\Checklists\custom       ] [Browse…] [Load] [Unload]   │
+│  Loaded 3 external checklist(s) from: D:\Checklists\custom                      │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│  Coverage — Endpoints tracked                                       [Refresh]    │
+│  Method │ Host            │ Endpoint              │ ✓ │ Done │ Total │ Last Updated │
+│  GET    │ api.example.com │ /users/{id}/orders    │   │  3   │  71   │ 2026-06-30.. │
+│  POST   │ api.example.com │ /auth/login           │ ✓ │  71  │  71   │ 2026-06-30.. │
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-- Project dir được lưu vào `MontoyaApi.persistence().extensionData()` — tự restore khi mở lại Burp
+- Project dir và checklist dir đều lưu vào `MontoyaApi.persistence().extensionData()` — tự restore khi mở lại Burp
 - Coverage table tự refresh khi có thay đổi (change listener từ ProgressStore)
 - Tất cả cột đều sortable (TableRowSorter)
 
@@ -252,6 +264,7 @@ src/main/resources/checklists/
 - Done / Un-done per endpoint
 - SettingsTab: cấu hình project dir, coverage table sortable
 - Custom checklist override qua `custom-checklists/`
+- External checklist directory: import thư mục bất kỳ, Load/Unload từ Settings tab
 - Reload checklists không cần restart Burp
 
 ### 🔲 Phase 2 — Planned

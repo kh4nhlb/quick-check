@@ -71,8 +71,66 @@ public class SettingsTab extends JPanel {
         settingsPanel.add(browseBtn, gbc);
         gbc.gridx = 3;
         settingsPanel.add(saveBtn, gbc);
-        gbc.gridx = 1; gbc.gridy = 1; gbc.gridwidth = 3;
+        gbc.gridx = 1; gbc.gridy = 1; gbc.gridwidth = 4;
         settingsPanel.add(dirStatusLabel, gbc);
+
+        // ── External checklist directory ─────────────────────────────────────
+        JTextField clDirField = new JTextField(
+            store.hasChecklistDir() ? store.getChecklistDir().getAbsolutePath() : "", 32);
+
+        JButton clBrowseBtn = new JButton("Browse…");
+        clBrowseBtn.addActionListener(e -> {
+            JFileChooser fc = new JFileChooser(
+                store.hasChecklistDir() ? store.getChecklistDir()
+                    : store.hasProjectDir() ? store.getProjectDir()
+                    : new File(System.getProperty("user.home")));
+            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
+                clDirField.setText(fc.getSelectedFile().getAbsolutePath());
+        });
+
+        JLabel clStatusLabel = new JLabel(buildChecklistStatus());
+        clStatusLabel.setFont(clStatusLabel.getFont().deriveFont(Font.ITALIC, 11f));
+        clStatusLabel.setForeground(Color.GRAY);
+
+        JButton clLoadBtn = new JButton("Load");
+        clLoadBtn.addActionListener(e -> {
+            String path = clDirField.getText().trim();
+            if (path.isBlank()) return;
+            File dir = new File(path);
+            if (!dir.isDirectory()) {
+                JOptionPane.showMessageDialog(this, "Directory not found:\n" + path,
+                    "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            store.setChecklistDir(dir);
+            repo.setExternalDir(dir);
+            repo.reload(store.getProjectDir());
+            clStatusLabel.setText(buildChecklistStatus());
+        });
+
+        JButton clUnloadBtn = new JButton("Unload");
+        clUnloadBtn.addActionListener(e -> {
+            store.clearChecklistDir();
+            repo.clearExternalDir();
+            repo.reload(store.getProjectDir());
+            clDirField.setText("");
+            clStatusLabel.setText(buildChecklistStatus());
+        });
+
+        gbc.gridwidth = 1;
+        gbc.gridx = 0; gbc.gridy = 2; gbc.weightx = 0;
+        settingsPanel.add(new JLabel("Checklist directory:"), gbc);
+        gbc.gridx = 1; gbc.weightx = 1.0;
+        settingsPanel.add(clDirField, gbc);
+        gbc.gridx = 2; gbc.weightx = 0;
+        settingsPanel.add(clBrowseBtn, gbc);
+        gbc.gridx = 3;
+        settingsPanel.add(clLoadBtn, gbc);
+        gbc.gridx = 4;
+        settingsPanel.add(clUnloadBtn, gbc);
+        gbc.gridx = 1; gbc.gridy = 3; gbc.gridwidth = 4;
+        settingsPanel.add(clStatusLabel, gbc);
 
         // ── Coverage table ───────────────────────────────────────────────────
         String[] cols = {"Method", "Host", "Endpoint", "Status", "Done", "Total", "Last Updated"};
@@ -137,6 +195,12 @@ public class SettingsTab extends JPanel {
         if (!store.hasProjectDir()) return "No project directory set.";
         return "progress file: " + store.getProjectDir().getAbsolutePath()
             + "\\quickcheck-progress.json  |  " + store.getEndpointCount() + " endpoint(s) tracked";
+    }
+
+    private String buildChecklistStatus() {
+        if (!store.hasChecklistDir()) return "Using built-in checklists only.";
+        int count = repo.countExternal();
+        return "Loaded " + count + " external checklist(s) from: " + store.getChecklistDir().getAbsolutePath();
     }
 
     private void refreshCoverage() {

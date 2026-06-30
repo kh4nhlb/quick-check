@@ -17,6 +17,7 @@ A Burp Suite extension that provides structured vulnerability checklists directl
 - 🔀 **Endpoint normalization** — numeric/UUID path segments replaced with `{id}`, query params normalized to `param={param}`, so `/users/42` and `/users/99` share the same entry
 - ✅ **Done / Un-done** — mark an endpoint fully tested; status reflected in coverage table
 - 📊 **Coverage table** in QuickCheck tab — lists all tracked endpoints (Method / Host / Endpoint / Status / Done / Total / Last Updated), sortable by column
+- 📂 **External checklist directory** — import any folder of JSON checklists from Settings; unload to revert to built-in defaults
 
 ## 🛠️ Requirements
 
@@ -43,7 +44,7 @@ Output: `target/quickcheck-<version>-all.jar`
 
 1. Open the **QuickCheck** tab in Burp
 2. Set the **Project Directory** (the folder where progress will be saved)
-3. Click **Save Settings** — a `quickcheck-progress.json` file will be created in that directory
+3. Click **Save & Reload** — a `quickcheck-progress.json` file will be created in that directory
 
 ### Running a checklist
 
@@ -63,10 +64,15 @@ The **QuickCheck** tab shows all tracked endpoints. Columns are sortable — cli
 
 ## 🧩 Custom Checklists
 
-Place JSON files in `<project-dir>/custom-checklists/` using the same schema as the built-in checklists under `src/main/resources/checklists/`. Click **Reload Checklists** in the QuickCheck tab to apply without restarting Burp.
+There are two ways to extend the built-in checklists:
 
-- Same checklist `id` → items are merged (custom item wins on duplicate `id`)
-- New `id` → added as a new category
+**Option A — External directory (recommended):** In the QuickCheck tab, set a **Checklist Directory** pointing to any folder of JSON files, then click **Load**. Click **Unload** to revert to built-in defaults. The directory is persisted across Burp restarts.
+
+**Option B — Project subfolder:** Place JSON files in `<project-dir>/custom-checklists/`. They are loaded automatically whenever the project directory is set or reloaded.
+
+Merge rules (same for both options):
+- Same checklist `id` → items are merged (external item wins on duplicate item `id`)
+- New checklist `id` → added as a new category
 
 ## 🗂️ Progress File
 

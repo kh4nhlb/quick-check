@@ -16,8 +16,9 @@ import java.util.concurrent.*;
 
 public class ProgressStore {
 
-    private static final String PREF_PROJECT_DIR = "quickcheck.projectDir";
-    private static final String PROGRESS_FILENAME = "quickcheck-progress.json";
+    private static final String PREF_PROJECT_DIR   = "quickcheck.projectDir";
+    private static final String PREF_CHECKLIST_DIR = "quickcheck.checklistDir";
+    private static final String PROGRESS_FILENAME  = "quickcheck-progress.json";
 
     private final MontoyaApi api;
     private final KeyNormalizer normalizer = new KeyNormalizer();
@@ -31,6 +32,7 @@ public class ProgressStore {
     private ScheduledFuture<?> pendingSave;
     private File projectDir;
     private File progressFile;
+    private File checklistDir;
     private ProjectProgress progress = new ProjectProgress();
     private final List<Runnable> changeListeners = new ArrayList<>();
 
@@ -39,6 +41,10 @@ public class ProgressStore {
         String savedDir = api.persistence().extensionData().getString(PREF_PROJECT_DIR);
         if (savedDir != null && !savedDir.isBlank()) {
             setProjectDir(new File(savedDir));
+        }
+        String savedChecklistDir = api.persistence().extensionData().getString(PREF_CHECKLIST_DIR);
+        if (savedChecklistDir != null && !savedChecklistDir.isBlank()) {
+            this.checklistDir = new File(savedChecklistDir);
         }
     }
 
@@ -52,6 +58,19 @@ public class ProgressStore {
 
     public File getProjectDir() { return projectDir; }
     public boolean hasProjectDir() { return projectDir != null; }
+
+    public File getChecklistDir() { return checklistDir; }
+    public boolean hasChecklistDir() { return checklistDir != null; }
+
+    public void setChecklistDir(File dir) {
+        this.checklistDir = dir;
+        api.persistence().extensionData().setString(PREF_CHECKLIST_DIR, dir.getAbsolutePath());
+    }
+
+    public void clearChecklistDir() {
+        this.checklistDir = null;
+        api.persistence().extensionData().setString(PREF_CHECKLIST_DIR, "");
+    }
 
     private ProjectProgress load() {
         if (progressFile == null || !progressFile.exists()) {

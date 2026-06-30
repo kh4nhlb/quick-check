@@ -19,6 +19,7 @@ public class ChecklistRepository {
 
     private final Gson gson = new Gson();
     private final Map<String, Checklist> map = new LinkedHashMap<>();
+    private File externalDir = null;
 
     public ChecklistRepository() {
         loadBuiltIn();
@@ -26,8 +27,7 @@ public class ChecklistRepository {
 
     private void loadBuiltIn() {
         for (String id : BUILTIN_ORDER) {
-            String resourcePath = "/checklists/" + id + ".json";
-            try (InputStream is = getClass().getResourceAsStream(resourcePath)) {
+            try (InputStream is = getClass().getResourceAsStream("/checklists/" + id + ".json")) {
                 if (is != null) {
                     Checklist cl = gson.fromJson(new String(is.readAllBytes()), Checklist.class);
                     map.put(cl.getId(), cl);
@@ -36,26 +36,33 @@ public class ChecklistRepository {
         }
     }
 
-    public void loadExternal(File projectDir) {
-        File customDir = new File(projectDir, "custom-checklists");
-        if (!customDir.isDirectory()) return;
-
-        File[] files = customDir.listFiles((d, name) -> name.endsWith(".json"));
+    private void loadJsonsFromDir(File dir) {
+        if (dir == null || !dir.isDirectory()) return;
+        File[] files = dir.listFiles((d, name) -> name.endsWith(".json"));
         if (files == null) return;
 
         for (File file : files) {
             try {
                 String json = Files.readString(file.toPath());
                 Checklist external = gson.fromJson(json, Checklist.class);
-                String id = external.getId();
-
-                if (map.containsKey(id)) {
-                    map.put(id, mergeInto(map.get(id), external));
+                if (external == null || external.getId() == null) continue;
+                if (map.containsKey(external.getId())) {
+                    map.put(external.getId(), mergeInto(map.get(external.getId()), external));
                 } else {
-                    map.put(id, external);
+                    map.put(external.getId(), external);
                 }
             } catch (Exception ignored) {}
         }
+    }
+
+    public void setExternalDir(File dir) { this.externalDir = dir; }
+    public void clearExternalDir()       { this.externalDir = null; }
+    public File getExternalDir()         { return externalDir; }
+
+    public int countExternal() {
+        if (externalDir == null || !externalDir.isDirectory()) return 0;
+        File[] files = externalDir.listFiles((d, n) -> n.endsWith(".json"));
+        return files == null ? 0 : files.length;
     }
 
     private Checklist mergeInto(Checklist base, Checklist override) {
@@ -77,10 +84,10 @@ public class ChecklistRepository {
         return Optional.ofNullable(map.get(id));
     }
 
-    /** Reload built-in checklists and re-apply external overrides. */
     public void reload(File projectDir) {
         map.clear();
         loadBuiltIn();
-        if (projectDir != null) loadExternal(projectDir);
+        if (projectDir != null) loadJsonsFromDir(new File(projectDir, "custom-checklists"));
+        if (externalDir != null) loadJsonsFromDir(externalDir);
     }
 }

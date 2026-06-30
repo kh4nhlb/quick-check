@@ -19,6 +19,9 @@ public class QuickCheckExtension implements BurpExtension {
         ProgressStore store = new ProgressStore(api);
         ChecklistMerger merger = new ChecklistMerger();
 
+        if (store.hasChecklistDir()) {
+            repo.setExternalDir(store.getChecklistDir());
+        }
         if (store.hasProjectDir()) {
             repo.reload(store.getProjectDir());
         }
