@@ -1,4 +1,4 @@
-package com.quickcheck.model;
+package com.pentracker.model;
 
 public class ItemState {
     private boolean done;

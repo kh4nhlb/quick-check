@@ -1,7 +1,7 @@
-package com.quickcheck.engine;
+package com.pentracker.engine;
 
-import com.quickcheck.model.Checklist;
-import com.quickcheck.model.ChecklistItem;
+import com.pentracker.model.Checklist;
+import com.pentracker.model.ChecklistItem;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,11 +12,6 @@ public class ChecklistMerger {
         "CRITICAL", 0, "HIGH", 1, "MEDIUM", 2, "LOW", 3, "INFO", 4
     );
 
-    /**
-     * Merges selected checklists into grouped sections.
-     * Each entry: checklist → items (deduped by id, sorted by severity).
-     * Items appearing in multiple checklists are only shown in the first one.
-     */
     public List<Map.Entry<Checklist, List<ChecklistItem>>> mergeGrouped(List<Checklist> checklists) {
         Set<String> seen = new LinkedHashSet<>();
         List<Map.Entry<Checklist, List<ChecklistItem>>> result = new ArrayList<>();
@@ -34,5 +29,4 @@ public class ChecklistMerger {
         }
         return result;
     }
-
 }

@@ -1,19 +1,19 @@
-package com.quickcheck;
+package com.pentracker;
 
 import burp.api.montoya.BurpExtension;
 import burp.api.montoya.MontoyaApi;
-import com.quickcheck.data.ChecklistRepository;
-import com.quickcheck.data.ProgressStore;
-import com.quickcheck.engine.ChecklistMerger;
-import com.quickcheck.handler.QuickCheckContextMenu;
-import com.quickcheck.ui.ChecklistFrame;
-import com.quickcheck.ui.SettingsTab;
+import com.pentracker.data.ChecklistRepository;
+import com.pentracker.data.ProgressStore;
+import com.pentracker.engine.ChecklistMerger;
+import com.pentracker.handler.PenTrackerContextMenu;
+import com.pentracker.ui.ChecklistFrame;
+import com.pentracker.ui.SettingsTab;
 
-public class QuickCheckExtension implements BurpExtension {
+public class PenTrackerExtension implements BurpExtension {
 
     @Override
     public void initialize(MontoyaApi api) {
-        api.extension().setName("QuickCheck");
+        api.extension().setName("PenTracker");
 
         ChecklistRepository repo = new ChecklistRepository();
         ProgressStore store = new ProgressStore(api);
@@ -32,15 +32,15 @@ public class QuickCheckExtension implements BurpExtension {
         if (!burpIcons.isEmpty()) checklistFrame.setIconImages(burpIcons);
 
         SettingsTab settingsTab = new SettingsTab(repo, store);
-        api.userInterface().registerSuiteTab("QuickCheck", settingsTab);
+        api.userInterface().registerSuiteTab("PenTracker", settingsTab);
         api.userInterface().registerContextMenuItemsProvider(
-            new QuickCheckContextMenu(api, checklistFrame));
+            new PenTrackerContextMenu(api, checklistFrame));
 
         api.extension().registerUnloadingHandler(() -> {
             store.shutdown();
             checklistFrame.dispose();
         });
 
-        api.logging().logToOutput("QuickCheck loaded — right-click any request → QuickChecklist");
+        api.logging().logToOutput("PenTracker loaded — right-click any request → PenTracker Checklist");
     }
 }

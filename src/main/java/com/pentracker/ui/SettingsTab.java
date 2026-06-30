@@ -1,8 +1,8 @@
-package com.quickcheck.ui;
+package com.pentracker.ui;
 
-import com.quickcheck.data.ChecklistRepository;
-import com.quickcheck.data.ProgressStore;
-import com.quickcheck.model.EndpointProgress;
+import com.pentracker.data.ChecklistRepository;
+import com.pentracker.data.ProgressStore;
+import com.pentracker.model.EndpointProgress;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -194,7 +194,7 @@ public class SettingsTab extends JPanel {
     private String buildStatus() {
         if (!store.hasProjectDir()) return "No project directory set.";
         return "progress file: " + store.getProjectDir().getAbsolutePath()
-            + "\\quickcheck-progress.json  |  " + store.getEndpointCount() + " endpoint(s) tracked";
+            + "\\pentracker-progress.json  |  " + store.getEndpointCount() + " endpoint(s) tracked";
     }
 
     private String buildChecklistStatus() {

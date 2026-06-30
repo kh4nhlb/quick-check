@@ -1,4 +1,4 @@
-package com.quickcheck.model;
+package com.pentracker.model;
 
 import java.util.*;
 

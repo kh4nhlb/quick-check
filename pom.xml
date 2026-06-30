@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.quickcheck</groupId>
-    <artifactId>quickcheck</artifactId>
+    <groupId>com.pentracker</groupId>
+    <artifactId>pentracker</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
@@ -46,7 +46,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.quickcheck.QuickCheckExtension</mainClass>
+                            <mainClass>com.pentracker.PenTrackerExtension</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

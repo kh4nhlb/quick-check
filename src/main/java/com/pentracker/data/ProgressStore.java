@@ -1,12 +1,12 @@
-package com.quickcheck.data;
+package com.pentracker.data;
 
 import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.http.message.requests.HttpRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.quickcheck.engine.KeyNormalizer;
-import com.quickcheck.model.EndpointProgress;
-import com.quickcheck.model.ProjectProgress;
+import com.pentracker.engine.KeyNormalizer;
+import com.pentracker.model.EndpointProgress;
+import com.pentracker.model.ProjectProgress;
 
 import java.io.*;
 import java.nio.file.*;
@@ -16,15 +16,15 @@ import java.util.concurrent.*;
 
 public class ProgressStore {
 
-    private static final String PREF_PROJECT_DIR   = "quickcheck.projectDir";
-    private static final String PREF_CHECKLIST_DIR = "quickcheck.checklistDir";
-    private static final String PROGRESS_FILENAME  = "quickcheck-progress.json";
+    private static final String PREF_PROJECT_DIR   = "pentracker.projectDir";
+    private static final String PREF_CHECKLIST_DIR = "pentracker.checklistDir";
+    private static final String PROGRESS_FILENAME  = "pentracker-progress.json";
 
     private final MontoyaApi api;
     private final KeyNormalizer normalizer = new KeyNormalizer();
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
-        Thread t = new Thread(r, "QuickCheck-Save");
+        Thread t = new Thread(r, "PenTracker-Save");
         t.setDaemon(true);
         return t;
     });
@@ -83,7 +83,7 @@ public class ProgressStore {
             ProjectProgress loaded = gson.fromJson(json, ProjectProgress.class);
             return loaded != null ? loaded : new ProjectProgress();
         } catch (Exception e) {
-            api.logging().logToError("QuickCheck: failed to load progress — " + e.getMessage());
+            api.logging().logToError("PenTracker: failed to load progress — " + e.getMessage());
             return new ProjectProgress();
         }
     }
@@ -142,7 +142,7 @@ public class ProgressStore {
             progress.setUpdated(Instant.now().toString());
             Files.writeString(progressFile.toPath(), gson.toJson(progress));
         } catch (IOException e) {
-            api.logging().logToError("QuickCheck: save failed — " + e.getMessage());
+            api.logging().logToError("PenTracker: save failed — " + e.getMessage());
         }
     }
 

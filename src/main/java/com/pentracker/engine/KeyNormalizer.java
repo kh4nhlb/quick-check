@@ -1,4 +1,4 @@
-package com.quickcheck.engine;
+package com.pentracker.engine;
 
 import burp.api.montoya.http.message.requests.HttpRequest;
 
@@ -21,7 +21,6 @@ public class KeyNormalizer {
         String host   = request.httpService().host();
         String method = request.method().toUpperCase();
 
-        // Extract path+query from URL (request.path() may omit query string)
         String url = request.url();
         int schemeEnd = url.indexOf("://");
         int pathStart = schemeEnd >= 0 ? url.indexOf('/', schemeEnd + 3) : 0;

@@ -1,10 +1,10 @@
-package com.quickcheck.ui;
+package com.pentracker.ui;
 
 import burp.api.montoya.http.message.requests.HttpRequest;
-import com.quickcheck.data.ChecklistRepository;
-import com.quickcheck.data.ProgressStore;
-import com.quickcheck.engine.ChecklistMerger;
-import com.quickcheck.model.*;
+import com.pentracker.data.ChecklistRepository;
+import com.pentracker.data.ProgressStore;
+import com.pentracker.engine.ChecklistMerger;
+import com.pentracker.model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,6 +38,8 @@ public class ChecklistFrame extends JFrame {
     private final JProgressBar progressBar = new JProgressBar(0, 1);
     private final JPanel contentPanel = new JPanel();
     private final JButton doneBtn = new JButton("Done");
+    private final List<Runnable> collapseActions = new ArrayList<>();
+    private boolean pinned = true;
 
     public ChecklistFrame(ChecklistRepository repo, ProgressStore store, ChecklistMerger merger) {
         super("Pentest Tracker  —  by kh4nhlb");
@@ -48,6 +50,7 @@ public class ChecklistFrame extends JFrame {
         setSize(560, 680);
         setLocationByPlatform(true);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        setAlwaysOnTop(true);
         setLayout(new BorderLayout());
 
         Font base = new JLabel().getFont();
@@ -93,18 +96,57 @@ public class ChecklistFrame extends JFrame {
         progressBar.setStringPainted(false);
         progressBar.setForeground(ACCENT);
 
+        Font base = new JLabel().getFont();
+
+        JButton pinBtn = new JButton(makePinIcon(true));
+        pinBtn.setFocusPainted(false);
+        pinBtn.setBorderPainted(false);
+        pinBtn.setOpaque(false);
+        pinBtn.setToolTipText("Unpin — allow window to go behind Burp");
+        pinBtn.addActionListener(e -> {
+            pinned = !pinned;
+            setAlwaysOnTop(pinned);
+            pinBtn.setIcon(makePinIcon(pinned));
+            pinBtn.setToolTipText(pinned
+                ? "Unpin — allow window to go behind Burp"
+                : "Pin on top");
+        });
+
+        JButton collapseAllBtn = new JButton("Collapse All");
+        collapseAllBtn.setFont(base.deriveFont(Font.BOLD, 14f));
+        collapseAllBtn.setFocusPainted(false);
+        collapseAllBtn.addActionListener(e -> {
+            collapseActions.forEach(Runnable::run);
+            contentPanel.revalidate();
+            contentPanel.repaint();
+        });
+
         JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         left.setOpaque(false);
-        left.add(progressBar);
-        left.add(progressLbl);
+        left.add(pinBtn);
+        left.add(collapseAllBtn);
 
-        Font base = new JLabel().getFont();
+        JPanel center = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
+        center.setOpaque(false);
+        center.add(progressBar);
+        center.add(progressLbl);
+
+        Color doneBtnNormal = new Color(255, 102, 51);
+        Color doneBtnHover  = new Color(210, 78, 35);
 
         doneBtn.setFont(base.deriveFont(Font.BOLD, 14f));
         doneBtn.setFocusPainted(false);
+        doneBtn.setBorderPainted(false);
+        doneBtn.setOpaque(true);
+        doneBtn.setBackground(doneBtnNormal);
+        doneBtn.setForeground(Color.WHITE);
+        doneBtn.addMouseListener(new MouseAdapter() {
+            @Override public void mouseEntered(MouseEvent e) { doneBtn.setBackground(doneBtnHover); }
+            @Override public void mouseExited(MouseEvent e)  { doneBtn.setBackground(doneBtnNormal); }
+        });
         doneBtn.addActionListener(e -> onDoneClicked());
 
-        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         right.setOpaque(false);
         right.add(doneBtn);
 
@@ -113,8 +155,9 @@ public class ChecklistFrame extends JFrame {
             BorderFactory.createMatteBorder(1, 0, 0, 0,
                 UIManager.getColor("Separator.foreground")),
             BorderFactory.createEmptyBorder(8, 12, 8, 12)));
-        bar.add(left,  BorderLayout.WEST);
-        bar.add(right, BorderLayout.EAST);
+        bar.add(left,   BorderLayout.WEST);
+        bar.add(center, BorderLayout.CENTER);
+        bar.add(right,  BorderLayout.EAST);
         return bar;
     }
 
@@ -129,6 +172,7 @@ public class ChecklistFrame extends JFrame {
         methodLabel.setText(method + " ");
         methodLabel.setForeground(METHOD_COLOR.getOrDefault(method, ACCENT));
         titleLabel.setText(path);
+        titleLabel.setToolTipText(path);
 
         refreshContent();
         updateDoneBtn();
@@ -168,6 +212,7 @@ public class ChecklistFrame extends JFrame {
 
         Font base = new JLabel().getFont();
 
+        collapseActions.clear();
         activeItemIds = new LinkedHashSet<>();
         if (groups.isEmpty()) {
             JLabel lbl = new JLabel("No checklist selected.");
@@ -206,6 +251,14 @@ public class ChecklistFrame extends JFrame {
         for (ChecklistItem item : items)
             rowBlock.add(buildItemRow(item,
                 currentProgress.getOrCreateItemState(item.getId()), items, header, base));
+
+        collapseActions.add(() -> {
+            if (open[0]) {
+                open[0] = false;
+                rowBlock.setVisible(false);
+                refreshHeader(header, items, false);
+            }
+        });
 
         MouseAdapter toggle = new MouseAdapter() {
             @Override public void mouseClicked(MouseEvent e) {
@@ -388,5 +441,35 @@ public class ChecklistFrame extends JFrame {
         progressBar.setMaximum(Math.max(total, 1));
         progressBar.setValue(done);
         progressLbl.setText(done + " / " + total);
+    }
+
+    private static Icon makePinIcon(boolean pinned) {
+        return new Icon() {
+            @Override
+            public void paintIcon(Component c, Graphics gr, int x, int y) {
+                Graphics2D g = (Graphics2D) gr.create();
+                g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g.translate(x, y);
+
+                Color fg = c != null ? c.getForeground() : Color.DARK_GRAY;
+
+                // Large round head — upper-right
+                g.setColor(fg);
+                g.fillOval(6, 0, 12, 12);
+
+                // Short thin needle — lower-left
+                g.setStroke(new BasicStroke(1.6f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                g.drawLine(8, 11, 2, 18);
+
+                if (!pinned) {
+                    g.setColor(new Color(210, 50, 50));
+                    g.setStroke(new BasicStroke(2.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                    g.drawLine(1, 1, 18, 18);
+                }
+                g.dispose();
+            }
+            @Override public int getIconWidth()  { return 20; }
+            @Override public int getIconHeight() { return 20; }
+        };
     }
 }

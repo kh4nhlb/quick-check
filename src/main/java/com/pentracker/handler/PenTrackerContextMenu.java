@@ -1,21 +1,21 @@
-package com.quickcheck.handler;
+package com.pentracker.handler;
 
 import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.ui.contextmenu.ContextMenuEvent;
 import burp.api.montoya.ui.contextmenu.ContextMenuItemsProvider;
-import com.quickcheck.ui.ChecklistFrame;
+import com.pentracker.ui.ChecklistFrame;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-public class QuickCheckContextMenu implements ContextMenuItemsProvider {
+public class PenTrackerContextMenu implements ContextMenuItemsProvider {
 
     private final MontoyaApi api;
     private final ChecklistFrame checklistFrame;
 
-    public QuickCheckContextMenu(MontoyaApi api, ChecklistFrame checklistFrame) {
+    public PenTrackerContextMenu(MontoyaApi api, ChecklistFrame checklistFrame) {
         this.api = api;
         this.checklistFrame = checklistFrame;
     }
@@ -27,7 +27,7 @@ public class QuickCheckContextMenu implements ContextMenuItemsProvider {
 
         if (selected.isEmpty() && !hasEditor) return List.of();
 
-        JMenuItem item = new JMenuItem("QuickChecklist");
+        JMenuItem item = new JMenuItem("PenTracker Checklist");
         item.addActionListener(e -> {
             HttpRequestResponse rr = selected.isEmpty()
                 ? event.messageEditorRequestResponse().get().requestResponse()
