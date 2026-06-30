@@ -1,0 +1,91 @@
+{
+  "id": "auth_session",
+  "name": "Authentication & Session",
+  "group": "vuln",
+  "items": [
+    {
+      "id": "auth_001",
+      "title": "JWT - algorithm confusion (none / RS256→HS256)",
+      "severity": "CRITICAL",
+      "description": "Thử alg:none để bỏ qua signature. Thử đổi RS256→HS256 rồi sign bằng public key.",
+      "reference": "OWASP API2:2023"
+    },
+    {
+      "id": "auth_002",
+      "title": "JWT - signature không được verify",
+      "severity": "CRITICAL",
+      "description": "Sửa payload (sub, role) mà không đổi signature. Nếu server vẫn chấp nhận → không verify.",
+      "reference": "OWASP API2:2023"
+    },
+    {
+      "id": "auth_003",
+      "title": "JWT - exp không được kiểm tra",
+      "severity": "HIGH",
+      "description": "Dùng token đã hết hạn. Kiểm tra server có từ chối không.",
+      "reference": "OWASP API2:2023"
+    },
+    {
+      "id": "auth_004",
+      "title": "JWT - claim nhạy cảm bị tin tưởng từ payload",
+      "severity": "HIGH",
+      "description": "Sửa claim role/isAdmin/scope trong payload. Server không được tin payload mà phải lookup DB.",
+      "reference": "OWASP API2:2023"
+    },
+    {
+      "id": "auth_005",
+      "title": "Brute force - không có rate limit / lockout",
+      "severity": "HIGH",
+      "description": "Gửi nhiều request login sai liên tiếp. Kiểm tra có bị block/lockout không.",
+      "reference": "OWASP API4:2023"
+    },
+    {
+      "id": "auth_006",
+      "title": "MFA bypass - skip bước xác thực OTP",
+      "severity": "HIGH",
+      "description": "Sau khi login thành công bước 1, thử gọi thẳng endpoint step 3 bỏ qua OTP. Kiểm tra server enforce flow không.",
+      "reference": "OWASP API2:2023"
+    },
+    {
+      "id": "auth_007",
+      "title": "OAuth - state parameter thiếu (CSRF on OAuth flow)",
+      "severity": "HIGH",
+      "description": "Kiểm tra callback URL có validate state param không. Nếu thiếu → có thể CSRF hijack OAuth.",
+      "reference": "OWASP API2:2023"
+    },
+    {
+      "id": "auth_008",
+      "title": "OAuth - redirect_uri open redirect / bypass",
+      "severity": "HIGH",
+      "description": "Thử thêm ký tự: redirect_uri=https://legit.com@evil.com, legit.com%2Fevil. Kiểm tra whitelist có chặt không.",
+      "reference": "OWASP API2:2023"
+    },
+    {
+      "id": "auth_009",
+      "title": "Session không bị invalidate sau logout",
+      "severity": "HIGH",
+      "description": "Logout rồi dùng lại session token/cookie cũ. Server phải revoke server-side.",
+      "reference": "OWASP API2:2023"
+    },
+    {
+      "id": "auth_010",
+      "title": "Password reset token có thể đoán / dùng lại",
+      "severity": "HIGH",
+      "description": "Kiểm tra token reset có đủ entropy không, có expiry không, dùng 1 lần hay nhiều lần.",
+      "reference": "OWASP API2:2023"
+    },
+    {
+      "id": "auth_011",
+      "title": "Refresh token không rotate sau khi dùng",
+      "severity": "MEDIUM",
+      "description": "Dùng refresh token lấy access token mới, sau đó dùng lại refresh token cũ. Phải bị từ chối.",
+      "reference": "OWASP API2:2023"
+    },
+    {
+      "id": "auth_012",
+      "title": "Account enumeration qua response khác nhau",
+      "severity": "MEDIUM",
+      "description": "So sánh response/thời gian khi login sai username vs sai password. Response phải đồng nhất.",
+      "reference": "OWASP API2:2023"
+    }
+  ]
+}

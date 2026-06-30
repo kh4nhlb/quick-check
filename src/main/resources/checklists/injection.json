@@ -1,0 +1,84 @@
+{
+  "id": "injection",
+  "name": "Injection",
+  "group": "vuln",
+  "items": [
+    {
+      "id": "inj_001",
+      "title": "SQL Injection - param trên URL / query string",
+      "severity": "CRITICAL",
+      "description": "Thử ' OR '1'='1, 1; DROP TABLE, 1' AND SLEEP(5)-- vào các param. Dùng sqlmap để tự động hóa.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "inj_002",
+      "title": "SQL Injection - request body (JSON/form)",
+      "severity": "CRITICAL",
+      "description": "Inject payload vào các field trong body: {\"username\": \"admin'--\"}. Chú ý cả field ít rõ ràng như sort, filter.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "inj_003",
+      "title": "NoSQL Injection (MongoDB operator)",
+      "severity": "CRITICAL",
+      "description": "Thử {\"$gt\": \"\"} , {\"$ne\": null}, {\"$regex\": \".*\"} vào field login/filter. Đặc biệt nguy hiểm với MongoDB.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "inj_004",
+      "title": "XSS - reflected qua param trả về response",
+      "severity": "HIGH",
+      "description": "Inject <script>alert(1)</script> hoặc \"><img src=x onerror=alert(1)> vào param. Kiểm tra response có reflect không.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "inj_005",
+      "title": "XSS - stored qua field được lưu DB và hiển thị lại",
+      "severity": "HIGH",
+      "description": "Lưu payload XSS vào field như name, bio, comment. Sau đó GET lại endpoint hiển thị để kiểm tra.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "inj_006",
+      "title": "SSTI - Server-Side Template Injection",
+      "severity": "CRITICAL",
+      "description": "Thử {{7*7}}, ${7*7}, #{7*7}, <#assign ex=\"freemarker\">. Nếu response trả về 49 → SSTI.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "inj_007",
+      "title": "Command Injection qua param được pass vào shell",
+      "severity": "CRITICAL",
+      "description": "Thử ; id, | whoami, `id`, $(id) vào các param liên quan filename, host, domain, ip.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "inj_008",
+      "title": "XXE - XML External Entity",
+      "severity": "HIGH",
+      "description": "Nếu API nhận XML, inject <!DOCTYPE foo [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]>. Kiểm tra response hoặc OOB.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "inj_009",
+      "title": "Header Injection (Host, X-Forwarded-For, Referer)",
+      "severity": "MEDIUM",
+      "description": "Thêm X-Forwarded-For: 127.0.0.1 để bypass IP whitelist. Thử Host injection nếu app dùng Host header để generate URL.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "inj_010",
+      "title": "LDAP Injection",
+      "severity": "HIGH",
+      "description": "Inject *)(uid=*))(|(uid=* vào field search/login để bypass hoặc dump users.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "inj_011",
+      "title": "GraphQL Injection / introspection leak",
+      "severity": "MEDIUM",
+      "description": "Thử introspection query {__schema{types{name}}}. Inject vào argument: {user(id: \"1 OR 1=1\")}.",
+      "reference": "OWASP API8:2023"
+    }
+  ]
+}

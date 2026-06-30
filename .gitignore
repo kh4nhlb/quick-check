@@ -1,0 +1,35 @@
+## Build output
+target/
+*.class
+
+## Maven
+.mvn/
+!.mvn/wrapper/maven-wrapper.properties
+
+## IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+## VS Code
+.vscode/
+*.code-workspace
+
+## Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Local Burp API jar (resolved via Maven Central)
+montoya-api-*.jar
+
+## Project-specific progress data
+quickcheck-progress.json
+custom-checklists/

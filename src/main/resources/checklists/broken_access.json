@@ -1,0 +1,77 @@
+{
+  "id": "broken_access",
+  "name": "Broken Access Control",
+  "group": "vuln",
+  "items": [
+    {
+      "id": "bac_001",
+      "title": "IDOR - truy cập resource của user khác qua ID",
+      "severity": "HIGH",
+      "description": "Thay đổi ID trong path/param (số, UUID) sang ID của user khác. Kiểm tra response có trả về data không thuộc quyền truy cập.",
+      "reference": "OWASP API1:2023"
+    },
+    {
+      "id": "bac_002",
+      "title": "IDOR - thao tác (edit/delete) resource của user khác",
+      "severity": "HIGH",
+      "description": "Gửi PUT/PATCH/DELETE với ID của user khác. Kiểm tra server có enforce ownership không.",
+      "reference": "OWASP API1:2023"
+    },
+    {
+      "id": "bac_003",
+      "title": "Horizontal privilege escalation",
+      "severity": "HIGH",
+      "description": "Dùng token của user A để gọi endpoint dành cho user B cùng role. Ví dụ: /api/users/B/orders với token A.",
+      "reference": "OWASP API1:2023"
+    },
+    {
+      "id": "bac_004",
+      "title": "Vertical privilege escalation - truy cập endpoint admin/staff",
+      "severity": "CRITICAL",
+      "description": "Dùng token user thường gọi các endpoint /admin, /internal, /staff. Kiểm tra function-level authorization.",
+      "reference": "OWASP API5:2023"
+    },
+    {
+      "id": "bac_005",
+      "title": "Mass assignment - inject field nhạy cảm",
+      "severity": "HIGH",
+      "description": "Thêm field không được document vào request body: role, isAdmin, verified, balance. Kiểm tra server có bind và lưu không.",
+      "reference": "OWASP API6:2023"
+    },
+    {
+      "id": "bac_006",
+      "title": "Bypass authorization qua HTTP method",
+      "severity": "MEDIUM",
+      "description": "Thử đổi method: GET→POST, POST→PUT. Một số framework kiểm tra auth theo method khác nhau.",
+      "reference": "OWASP API5:2023"
+    },
+    {
+      "id": "bac_007",
+      "title": "Truy cập resource qua indirect reference (filename, path)",
+      "severity": "HIGH",
+      "description": "Nếu API trả về filename/path, thử đoán hoặc brute force tên file của user khác.",
+      "reference": "OWASP API1:2023"
+    },
+    {
+      "id": "bac_008",
+      "title": "Thiếu kiểm tra object ownership ở nested resource",
+      "severity": "HIGH",
+      "description": "Ví dụ: /api/orders/{orderId}/items/{itemId} — server kiểm tra orderId có thuộc user không nhưng bỏ qua itemId.",
+      "reference": "OWASP API1:2023"
+    },
+    {
+      "id": "bac_009",
+      "title": "Token của user bị xóa/disable vẫn còn hoạt động",
+      "severity": "HIGH",
+      "description": "Disable/delete account, giữ lại token cũ và tiếp tục gọi API. Kiểm tra server có revoke session không.",
+      "reference": "OWASP API2:2023"
+    },
+    {
+      "id": "bac_010",
+      "title": "Regex bypass authorization check",
+      "severity": "MEDIUM",
+      "description": "Thử path traversal nhẹ: /api/admin%2fusers, /api/./admin/users. Một số router so khớp sai regex.",
+      "reference": "OWASP API5:2023"
+    }
+  ]
+}

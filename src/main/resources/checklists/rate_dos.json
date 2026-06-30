@@ -1,0 +1,63 @@
+{
+  "id": "rate_dos",
+  "name": "Rate Limiting & DoS",
+  "group": "vuln",
+  "items": [
+    {
+      "id": "rate_001",
+      "title": "Không có rate limit trên endpoint auth (login, OTP, reset)",
+      "severity": "HIGH",
+      "description": "Gửi 100+ request login/OTP liên tiếp. Không bị block → brute force khả thi.",
+      "reference": "OWASP API4:2023"
+    },
+    {
+      "id": "rate_002",
+      "title": "Không có rate limit trên action nhạy cảm",
+      "severity": "MEDIUM",
+      "description": "Gửi nhiều request tới endpoint send-email, send-sms, create-account. Kiểm tra có bị giới hạn không.",
+      "reference": "OWASP API4:2023"
+    },
+    {
+      "id": "rate_003",
+      "title": "Bypass rate limit qua header spoofing",
+      "severity": "HIGH",
+      "description": "Thêm X-Forwarded-For, X-Real-IP, X-Originating-IP với giá trị khác nhau để spoof IP, bypass rate limit per-IP.",
+      "reference": "OWASP API4:2023"
+    },
+    {
+      "id": "rate_004",
+      "title": "Large payload - không giới hạn kích thước request",
+      "severity": "MEDIUM",
+      "description": "Gửi body JSON/XML rất lớn (10MB+). Kiểm tra server có reject trước khi parse không hay bị OOM.",
+      "reference": "OWASP API4:2023"
+    },
+    {
+      "id": "rate_005",
+      "title": "Deep nested JSON / array bomb",
+      "severity": "MEDIUM",
+      "description": "Gửi JSON lồng nhau 100+ cấp hoặc array chứa triệu phần tử. Có thể gây stack overflow hoặc CPU spike khi parse.",
+      "reference": "OWASP API4:2023"
+    },
+    {
+      "id": "rate_006",
+      "title": "ReDoS - regex phức tạp trên input không giới hạn",
+      "severity": "MEDIUM",
+      "description": "Nếu server validate bằng regex phức tạp, gửi string dài với pattern khai thác backtracking.",
+      "reference": "OWASP API4:2023"
+    },
+    {
+      "id": "rate_007",
+      "title": "Thiếu timeout trên operation tốn tài nguyên",
+      "severity": "MEDIUM",
+      "description": "Gửi query phức tạp (search, filter, aggregation) và giữ kết nối. Kiểm tra server có timeout không.",
+      "reference": "OWASP API4:2023"
+    },
+    {
+      "id": "rate_008",
+      "title": "Graphql - query batching / introspection gây DoS",
+      "severity": "MEDIUM",
+      "description": "Gửi batch query với hàng trăm operation cùng lúc. Gửi deeply nested fragment để gây amplification.",
+      "reference": "OWASP API4:2023"
+    }
+  ]
+}

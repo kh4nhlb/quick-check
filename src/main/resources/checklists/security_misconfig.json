@@ -1,0 +1,77 @@
+{
+  "id": "security_misconfig",
+  "name": "Security Misconfiguration",
+  "group": "vuln",
+  "items": [
+    {
+      "id": "misconf_001",
+      "title": "CORS - wildcard hoặc origin không được validate",
+      "severity": "HIGH",
+      "description": "Gửi request với Origin: https://evil.com. Nếu response có Access-Control-Allow-Origin: * hoặc echo lại evil.com → misconfigured.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "misconf_002",
+      "title": "CORS - credentials=true kết hợp wildcard origin",
+      "severity": "CRITICAL",
+      "description": "Access-Control-Allow-Credentials: true với origin không whitelist nghiêm ngặt → kẻ tấn công có thể đọc response có cookie.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "misconf_003",
+      "title": "Thiếu security headers (HSTS, CSP, X-Frame-Options...)",
+      "severity": "MEDIUM",
+      "description": "Kiểm tra response headers: Strict-Transport-Security, Content-Security-Policy, X-Content-Type-Options, X-Frame-Options.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "misconf_004",
+      "title": "HTTP method không bị restrict (TRACE, PUT, DELETE)",
+      "severity": "MEDIUM",
+      "description": "Thử OPTIONS để xem Allow header. Thử TRACE để kiểm tra XST. Thử PUT/DELETE trên endpoint chỉ dùng GET.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "misconf_005",
+      "title": "Verbose error / stack trace lộ thông tin",
+      "severity": "MEDIUM",
+      "description": "Gửi request sai format, param lạ. Kiểm tra response có lộ stack trace, tên class, query SQL, framework version không.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "misconf_006",
+      "title": "Sensitive data trong URL / query param",
+      "severity": "MEDIUM",
+      "description": "Kiểm tra token, password, API key có xuất hiện trong URL không (bị log, lưu history, Referer header).",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "misconf_007",
+      "title": "API version cũ vẫn active (version downgrade)",
+      "severity": "HIGH",
+      "description": "Thử /api/v1/ khi app đang ở v3. Version cũ thường thiếu patch security, bypass validation.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "misconf_008",
+      "title": "Debug / admin endpoint bị exposed",
+      "severity": "HIGH",
+      "description": "Thử /actuator, /debug, /swagger, /api-docs, /.env, /config, /metrics, /health không được bảo vệ.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "misconf_009",
+      "title": "HTTP (non-HTTPS) được chấp nhận",
+      "severity": "MEDIUM",
+      "description": "Gửi request qua HTTP. Kiểm tra có redirect 301 sang HTTPS không, hay vẫn serve response bình thường.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "misconf_010",
+      "title": "Content-Type không được validate (Content-Type confusion)",
+      "severity": "MEDIUM",
+      "description": "Đổi Content-Type từ application/json → text/plain hoặc application/xml. Kiểm tra server có parse sai không.",
+      "reference": "OWASP API8:2023"
+    }
+  ]
+}

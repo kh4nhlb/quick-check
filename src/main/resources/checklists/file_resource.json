@@ -1,0 +1,77 @@
+{
+  "id": "file_resource",
+  "name": "File & Resource Handling",
+  "group": "vuln",
+  "items": [
+    {
+      "id": "file_001",
+      "title": "File upload - bypass extension whitelist",
+      "severity": "CRITICAL",
+      "description": "Thử upload file.php, file.php5, file.phtml, file.php.jpg, file%00.jpg. Kiểm tra server có execute code không.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "file_002",
+      "title": "File upload - bypass Content-Type check",
+      "severity": "HIGH",
+      "description": "Upload file PHP nhưng set Content-Type: image/jpeg. Server chỉ check MIME type không check nội dung thực tế.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "file_003",
+      "title": "File upload - path traversal qua filename",
+      "severity": "HIGH",
+      "description": "Upload với filename: ../../etc/cron.d/shell, ../webroot/shell.php. Server phải sanitize tên file.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "file_004",
+      "title": "File upload - không giới hạn kích thước",
+      "severity": "MEDIUM",
+      "description": "Upload file rất lớn (100MB+). Kiểm tra có bị reject không hay gây DoS.",
+      "reference": "OWASP API4:2023"
+    },
+    {
+      "id": "file_005",
+      "title": "File upload - polyglot / magic bytes bypass",
+      "severity": "HIGH",
+      "description": "Tạo file vừa là ảnh hợp lệ (magic bytes GIF89a) vừa chứa PHP code. Bypass cả magic bytes check.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "file_006",
+      "title": "Path traversal - đọc file hệ thống",
+      "severity": "CRITICAL",
+      "description": "Thử ../../etc/passwd, ..%2F..%2Fetc%2Fpasswd, ....//....//etc/passwd vào param file, path, name.",
+      "reference": "OWASP API8:2023"
+    },
+    {
+      "id": "file_007",
+      "title": "SSRF - server gọi URL do user kiểm soát",
+      "severity": "CRITICAL",
+      "description": "Inject URL nội bộ: http://169.254.169.254/latest/meta-data/ (AWS), http://localhost:8080/admin vào param url, callback, webhook.",
+      "reference": "OWASP API7:2023"
+    },
+    {
+      "id": "file_008",
+      "title": "SSRF - bypass whitelist domain",
+      "severity": "HIGH",
+      "description": "Thử http://evil.com@legit.com, http://legit.com.evil.com, redirect chain, DNS rebinding để bypass SSRF filter.",
+      "reference": "OWASP API7:2023"
+    },
+    {
+      "id": "file_009",
+      "title": "SSRF qua giao thức khác (file://, dict://, gopher://)",
+      "severity": "HIGH",
+      "description": "Nếu server fetch URL, thử file:///etc/passwd, dict://localhost:11211/stats (memcached), gopher://.",
+      "reference": "OWASP API7:2023"
+    },
+    {
+      "id": "file_010",
+      "title": "Zip Slip - path traversal qua file nén",
+      "severity": "HIGH",
+      "description": "Tạo file zip chứa entry có path ../../evil.sh. Khi server extract → ghi file ra ngoài thư mục chỉ định.",
+      "reference": "OWASP API8:2023"
+    }
+  ]
+}
