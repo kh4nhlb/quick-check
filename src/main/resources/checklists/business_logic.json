@@ -1,77 +1,43 @@
 {
   "id": "business_logic",
-  "name": "Business Logic",
-  "group": "vuln",
+  "name": "Business Logic Flaw Testing",
+  "group": "vulnerability",
   "items": [
     {
-      "id": "logic_001",
-      "title": "Race condition - gửi request đồng thời",
+      "id": "bl-01",
+      "title": "Workflow step skip / replay",
       "severity": "HIGH",
-      "description": "Dùng Burp Repeater group / Turbo Intruder gửi 20-50 request cùng lúc. Kiểm tra action giới hạn 1 lần (redeem coupon, transfer) có bị exploit không.",
-      "reference": "OWASP API4:2023"
+      "description": "Thay đổi thứ tự thực hiện step trong workflow: skip step (bỏ qua payment, verification), replay step cũ, gọi thẳng API bước sau khi chưa hoàn thành bước trước."
     },
     {
-      "id": "logic_002",
-      "title": "Negative / overflow value trong số tiền, số lượng",
+      "id": "bl-02",
+      "title": "Negative / zero value exploitation",
       "severity": "HIGH",
-      "description": "Thử amount=-100, quantity=-1, price=0.001. Kiểm tra business logic có validate không hay chấp nhận giá trị vô lý.",
-      "reference": "OWASP API4:2023"
+      "description": "Thử giá trị âm và 0 ở field số lượng, giá tiền, điểm thưởng: quantity=-1 để nhận tiền hoàn, price=0 để mua miễn phí, transfer amount=-100 để nhận tiền thay vì gửi."
     },
     {
-      "id": "logic_003",
-      "title": "Price / quantity manipulation phía client",
+      "id": "bl-03",
+      "title": "Coupon / discount abuse",
       "severity": "HIGH",
-      "description": "Sửa price, discount, total trong request body. Server phải tính lại giá từ DB, không tin giá từ client.",
-      "reference": "OWASP API4:2023"
+      "description": "Áp dụng coupon nhiều lần, áp dụng trên đơn không đủ điều kiện, combine nhiều coupon, dùng coupon của account khác, race condition áp dụng cùng lúc nhiều request."
     },
     {
-      "id": "logic_004",
-      "title": "Workflow step bypass - bỏ qua bước trung gian",
+      "id": "bl-04",
+      "title": "Limited resource race condition",
       "severity": "HIGH",
-      "description": "Thử gọi thẳng bước cuối (confirm payment) mà không qua bước xác minh trước. Kiểm tra server enforce thứ tự workflow không.",
-      "reference": "OWASP API4:2023"
+      "description": "Claim/sử dụng resource có giới hạn (voucher, slot đăng ký, số lượng hàng) nhiều lần bằng race condition. Gửi parallel request đồng thời để vượt quá giới hạn."
     },
     {
-      "id": "logic_005",
-      "title": "Coupon / voucher dùng nhiều lần",
-      "severity": "MEDIUM",
-      "description": "Apply cùng coupon code nhiều lần trong 1 request hoặc nhiều request. Kiểm tra server có prevent reuse không.",
-      "reference": "OWASP API4:2023"
+      "id": "bl-05",
+      "title": "Price / client-side value tampering",
+      "severity": "CRITICAL",
+      "description": "Thay đổi giá/số tiền ở request: price, amount, discount, fee. Server phải luôn tính lại từ database, không trust giá trị từ client."
     },
     {
-      "id": "logic_006",
-      "title": "Currency / unit manipulation",
+      "id": "bl-06",
+      "title": "Business constraint bypass",
       "severity": "HIGH",
-      "description": "Thử đổi currency code (USD→VND), unit (kg→g) nếu server xử lý conversion. Kiểm tra có bị lợi dụng tỷ giá không.",
-      "reference": "OWASP API4:2023"
-    },
-    {
-      "id": "logic_007",
-      "title": "Mass assignment - field ẩn bị bind",
-      "severity": "HIGH",
-      "description": "Thêm field không document vào body: {\"role\":\"admin\",\"credit\":999999,\"verified\":true}. Kiểm tra server có bind blind không.",
-      "reference": "OWASP API6:2023"
-    },
-    {
-      "id": "logic_008",
-      "title": "Pagination / limit manipulation",
-      "severity": "MEDIUM",
-      "description": "Thử limit=99999, page=-1, offset=0&limit=0. Kiểm tra server có giới hạn max không hay trả về toàn bộ data.",
-      "reference": "OWASP API4:2023"
-    },
-    {
-      "id": "logic_009",
-      "title": "Data export không có giới hạn",
-      "severity": "MEDIUM",
-      "description": "Endpoint export (CSV/Excel) không giới hạn số record → có thể dump toàn bộ DB hoặc gây DoS.",
-      "reference": "OWASP API4:2023"
-    },
-    {
-      "id": "logic_010",
-      "title": "Thao tác trạng thái không hợp lệ (invalid state transition)",
-      "severity": "MEDIUM",
-      "description": "Thử cancel order đã delivered, refund order chưa paid, reactive account đã banned. Kiểm tra state machine có validate không.",
-      "reference": "OWASP API4:2023"
+      "description": "Bỏ qua điều kiện ràng buộc nghiệp vụ: giới hạn tuổi, giới hạn số dư, giới hạn khu vực, giới hạn số lượng nhân viên/chi nhánh. Gửi giá trị vượt ngưỡng."
     }
   ]
 }

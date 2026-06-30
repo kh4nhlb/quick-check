@@ -1,0 +1,61 @@
+{
+  "id": "payment_logic",
+  "name": "Payment Logic Testing",
+  "group": "feature",
+  "items": [
+    {
+      "id": "pay-01",
+      "title": "Price / amount tampering",
+      "severity": "CRITICAL",
+      "description": "Thay đổi giá trị amount/price trong request trước khi gửi lên server. Server phải tính lại giá từ database, không trust giá trị từ client."
+    },
+    {
+      "id": "pay-02",
+      "title": "Currency manipulation",
+      "severity": "HIGH",
+      "description": "Thay đổi currency code (USD→VND, EUR→JPY) để lợi dụng tỷ giá quy đổi sai. Kiểm tra server có normalize và validate currency đúng không."
+    },
+    {
+      "id": "pay-03",
+      "title": "Double spending via race condition",
+      "severity": "CRITICAL",
+      "description": "Gửi đồng thời nhiều request thanh toán cùng lúc bằng Turbo Intruder. Kiểm tra số dư có bị trừ nhiều lần không, hoặc đơn hàng có được tạo nhiều lần không."
+    },
+    {
+      "id": "pay-04",
+      "title": "Payment callback signature bypass",
+      "severity": "CRITICAL",
+      "description": "Callback/webhook xác nhận thanh toán từ payment gateway thiếu verify signature. Gửi fake callback với status=success để tạo giao dịch giả."
+    },
+    {
+      "id": "pay-05",
+      "title": "Payment callback replay",
+      "severity": "HIGH",
+      "description": "Replay lại request callback thanh toán đã thành công. Mỗi callback phải có nonce/transaction ID và server phải check idempotency."
+    },
+    {
+      "id": "pay-06",
+      "title": "Zero / negative payment amount",
+      "severity": "CRITICAL",
+      "description": "Thanh toán với amount=0 hoặc âm để nhận hàng/dịch vụ miễn phí, hoặc nhận tiền vào tài khoản thay vì gửi đi."
+    },
+    {
+      "id": "pay-07",
+      "title": "Skip OTP / 3DS during payment",
+      "severity": "CRITICAL",
+      "description": "Bỏ qua bước xác thực OTP/3D-Secure bằng cách gọi thẳng API bước sau (xác nhận giao dịch) mà không qua bước verify OTP."
+    },
+    {
+      "id": "pay-08",
+      "title": "Manipulate payment gateway response",
+      "severity": "HIGH",
+      "description": "Intercept và sửa response từ payment gateway (status=failed → status=success) ở phía client trước khi gửi lên server xử lý. Server phải verify status trực tiếp với gateway."
+    },
+    {
+      "id": "pay-related",
+      "title": "Related vulnerability categories",
+      "severity": "INFO",
+      "description": "Tham khảo thêm:\n- Business Logic Flaw Testing (negative value, workflow bypass)\n- OTP/2FA/MFA/Captcha Testing (3DS bypass)\n- Authorization & Access Control Testing (truy cập giao dịch người khác)\n- Rate Limiting & DoS Testing (race condition)"
+    }
+  ]
+}

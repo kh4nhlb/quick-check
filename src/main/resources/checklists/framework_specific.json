@@ -1,0 +1,49 @@
+{
+  "id": "framework_specific",
+  "name": "Framework Specific Vulnerabilities Testing",
+  "group": "vulnerability",
+  "items": [
+    {
+      "id": "fw-01",
+      "title": "Spring Boot Actuator exposure",
+      "severity": "CRITICAL",
+      "description": "Kiểm tra các endpoint Spring Boot Actuator:\n- /actuator/env (lộ biến môi trường, secret)\n- /actuator/heapdump (dump memory, chứa credentials)\n- /actuator/loggers (đổi log level)\n- /actuator/mappings (liệt kê tất cả route)\n- /actuator/shutdown (tắt app nếu bật)"
+    },
+    {
+      "id": "fw-02",
+      "title": "Spring SSTI (SpEL injection)",
+      "severity": "CRITICAL",
+      "description": "Thử SpEL trong field được xử lý bởi Spring: #{7*7}, #{T(java.lang.Runtime).getRuntime().exec('id')}. Thường gặp khi Spring EL được dùng trong template hoặc config."
+    },
+    {
+      "id": "fw-03",
+      "title": "Laravel debug mode on",
+      "severity": "HIGH",
+      "description": "Kiểm tra APP_DEBUG=true: trang lỗi Laravel hiển thị stack trace đầy đủ, biến môi trường, route list. Tìm ở trang 404/500 hoặc thử trigger exception."
+    },
+    {
+      "id": "fw-04",
+      "title": "Django debug mode / admin exposure",
+      "severity": "HIGH",
+      "description": "Kiểm tra DEBUG=True: trang lỗi Django hiện stack trace. Kiểm tra /admin/ exposure và secret key lộ trong error page hoặc source."
+    },
+    {
+      "id": "fw-05",
+      "title": "Express.js path traversal / prototype pollution",
+      "severity": "HIGH",
+      "description": "Kiểm tra prototype pollution: ?__proto__[admin]=true, ?constructor.prototype.admin=true. Có thể gây logic bypass trong ứng dụng Node.js dùng object merge/assign."
+    },
+    {
+      "id": "fw-06",
+      "title": "GraphQL introspection / batch attack",
+      "severity": "MEDIUM",
+      "description": "Gửi introspection query để xem toàn bộ schema GraphQL. Thử batching attack: gộp nhiều query trong 1 request để bypass rate limit. Kiểm tra introspection có bị disable ở prod không."
+    },
+    {
+      "id": "fw-07",
+      "title": "Mass assignment via framework ORM",
+      "severity": "HIGH",
+      "description": "Thêm field extra vào JSON body. Nếu ORM (ActiveRecord, Eloquent, Hibernate) dùng mass assignment không có guarded/fillable → gán field không mong muốn (role, admin, balance)."
+    }
+  ]
+}

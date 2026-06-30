@@ -1,0 +1,31 @@
+{
+  "id": "mandatory",
+  "name": "Mandatory Testcases",
+  "group": "mandatory",
+  "items": [
+    {
+      "id": "m-01",
+      "title": "Confirm scope authorization",
+      "severity": "CRITICAL",
+      "description": "Xác nhận phạm vi test đã được ủy quyền rõ ràng: IP/domain/feature/môi trường. Không test ngoài scope đã ký kết."
+    },
+    {
+      "id": "m-02",
+      "title": "Backup data before destructive tests",
+      "severity": "HIGH",
+      "description": "Backup dữ liệu trước khi test các chức năng có khả năng phá hủy hoặc gây mất dữ liệu: delete, race condition, bulk operations."
+    },
+    {
+      "id": "m-03",
+      "title": "Log all requests/responses",
+      "severity": "HIGH",
+      "description": "Ghi log toàn bộ request/response trong quá trình test (Burp Suite history). Dữ liệu này là evidence cho báo cáo và cần thiết khi reproduce lỗi."
+    },
+    {
+      "id": "m-04",
+      "title": "Check client-side rate limit before bulk testing",
+      "severity": "MEDIUM",
+      "description": "Kiểm tra rate limit/circuit breaker phía client testing để tránh gây downtime ngoài ý muốn. Không gửi số lượng request quá lớn lên hệ thống production."
+    }
+  ]
+}

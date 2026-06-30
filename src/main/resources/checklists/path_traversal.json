@@ -1,0 +1,43 @@
+{
+  "id": "path_traversal",
+  "name": "Path Traversal Testing",
+  "group": "vulnerability",
+  "items": [
+    {
+      "id": "pt-01",
+      "title": "Basic path traversal",
+      "severity": "CRITICAL",
+      "description": "Thử ../../../etc/passwd, ..\\..\\..\\ windows\\win.ini trong param filename, path, file, document. Kiểm tra response có trả về nội dung file không."
+    },
+    {
+      "id": "pt-02",
+      "title": "Encoded path traversal",
+      "severity": "HIGH",
+      "description": "Bypass filter bằng encoding: %2e%2e%2f (../), %252e%252e%252f (double encode), ..%2f, ..%5c, ..%c0%af (unicode). Một số filter chỉ check string literal ../"
+    },
+    {
+      "id": "pt-03",
+      "title": "Null byte bypass",
+      "severity": "HIGH",
+      "description": "Thêm null byte trước extension: ../../etc/passwd%00.jpg. Trong một số ngôn ngữ, null byte kết thúc string → server đọc /etc/passwd thay vì /etc/passwd.jpg."
+    },
+    {
+      "id": "pt-04",
+      "title": "Absolute path traversal",
+      "severity": "HIGH",
+      "description": "Thay vì dùng ../.. thử path tuyệt đối trực tiếp: /etc/passwd, /var/www/html/config.php, C:\\Windows\\win.ini. Một số ứng dụng accept absolute path."
+    },
+    {
+      "id": "pt-05",
+      "title": "Path traversal write / overwrite",
+      "severity": "CRITICAL",
+      "description": "Kết hợp path traversal với file upload hoặc write operation để ghi file ra ngoài thư mục cho phép. Ghi vào web root để tạo webshell."
+    },
+    {
+      "id": "pt-06",
+      "title": "Zip traversal",
+      "severity": "HIGH",
+      "description": "Upload ZIP chứa entry với path traversal (../../evil). Khi server giải nén, file được ghi ra ngoài thư mục đích. Kiểm tra bằng cách tạo ZIP độc hại."
+    }
+  ]
+}

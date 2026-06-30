@@ -1,0 +1,43 @@
+{
+  "id": "system_wide",
+  "name": "One-Time Testcases",
+  "group": "system",
+  "items": [
+    {
+      "id": "sw-01",
+      "title": "Version control file exposure",
+      "severity": "CRITICAL",
+      "description": "Kiểm tra /.git, /.svn trên web server. Nếu tìm thấy, dùng git-dumper để tải source code. Dấu hiệu: /.git/HEAD hoặc /.git/config trả 200."
+    },
+    {
+      "id": "sw-02",
+      "title": "robots.txt / sitemap.xml recon",
+      "severity": "MEDIUM",
+      "description": "Đọc /robots.txt và /sitemap.xml để tìm endpoint nội bộ, admin path, hoặc path bị Disallow (thường là đường dẫn quan trọng hơn)."
+    },
+    {
+      "id": "sw-03",
+      "title": "Security headers audit",
+      "severity": "MEDIUM",
+      "description": "Kiểm tra toàn bộ security headers:\n- Content-Security-Policy\n- X-Content-Type-Options\n- Strict-Transport-Security (HSTS)\n- X-Frame-Options\n- Referrer-Policy\n- Permissions-Policy"
+    },
+    {
+      "id": "sw-04",
+      "title": "TLS/SSL configuration audit",
+      "severity": "HIGH",
+      "description": "Kiểm tra cipher suite yếu, TLS 1.0/1.1, SSLv3, certificate expiry, self-signed cert. Dùng testssl.sh: ./testssl.sh https://target"
+    },
+    {
+      "id": "sw-05",
+      "title": "CORS configuration audit",
+      "severity": "HIGH",
+      "description": "Kiểm tra Access-Control-Allow-Origin: * kết hợp Access-Control-Allow-Credentials: true. Thử origin null và wildcard subdomain. CORS sai cấu hình cho phép attacker đọc response có credentials."
+    },
+    {
+      "id": "sw-06",
+      "title": "Subdomain takeover check",
+      "severity": "HIGH",
+      "description": "Tìm CNAME record trỏ tới service đã unclaim (Heroku, GitHub Pages, Azure, S3, Fastly). Dùng subjack hoặc nuclei template subdomaintakeover."
+    }
+  ]
+}

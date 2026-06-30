@@ -1,0 +1,43 @@
+{
+  "id": "cache",
+  "name": "Cache Vulnerabilities Testing",
+  "group": "vulnerability",
+  "items": [
+    {
+      "id": "cache-01",
+      "title": "Web cache poisoning via unkeyed header",
+      "severity": "HIGH",
+      "description": "Inject payload vào header không được đưa vào cache key nhưng lại được reflect trong response: X-Forwarded-Host, X-Forwarded-Scheme. Sau khi cache response độc, user khác nhận được."
+    },
+    {
+      "id": "cache-02",
+      "title": "Web cache poisoning via query string",
+      "severity": "HIGH",
+      "description": "Kiểm tra cache key có bao gồm toàn bộ query string không. Thêm param ẩn (không được xử lý nhưng phản ánh trong response) có thể cache response chứa XSS payload."
+    },
+    {
+      "id": "cache-03",
+      "title": "Response cache sensitive data",
+      "severity": "HIGH",
+      "description": "Kiểm tra response chứa dữ liệu nhạy cảm (token, PII) có header Cache-Control: public hoặc thiếu no-store/no-cache không. Dữ liệu nhạy cảm không được cache."
+    },
+    {
+      "id": "cache-04",
+      "title": "Cache deception (path confusion)",
+      "severity": "HIGH",
+      "description": "Lừa cache proxy lưu response của URL authenticated: /profile/secret-data/style.css (cache nghĩ là CSS, thực ra là dữ liệu user). Attacker request URL đó → đọc được response cache."
+    },
+    {
+      "id": "cache-05",
+      "title": "Uncleared cache after logout",
+      "severity": "MEDIUM",
+      "description": "Sau khi đăng xuất, kiểm tra response được cache vẫn có thể truy cập được qua URL. Browser back hoặc refresh vẫn hiện dữ liệu của user cũ."
+    },
+    {
+      "id": "cache-06",
+      "title": "Vary header missing / incorrect",
+      "severity": "MEDIUM",
+      "description": "Kiểm tra response có set Vary: Authorization, Cookie không. Thiếu Vary → cache không phân biệt request của các user khác nhau → response của user A có thể serve cho user B."
+    }
+  ]
+}

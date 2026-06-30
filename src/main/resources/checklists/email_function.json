@@ -1,0 +1,43 @@
+{
+  "id": "email_function",
+  "name": "Email Function Testing",
+  "group": "vulnerability",
+  "items": [
+    {
+      "id": "em-01",
+      "title": "Email header injection",
+      "severity": "HIGH",
+      "description": "Chèn CRLF vào field email/name gửi form: attacker@evil.com%0aCc:victim@target.com. Có thể thêm CC/BCC, inject header, tạo attachment để spam từ server của target."
+    },
+    {
+      "id": "em-02",
+      "title": "Email template injection",
+      "severity": "HIGH",
+      "description": "Inject vào nội dung email qua tên/note/message field. Nếu template engine không escape: {{7*7}}, <script>, XSS trong email HTML."
+    },
+    {
+      "id": "em-03",
+      "title": "Email enumeration via response timing",
+      "severity": "MEDIUM",
+      "description": "Dùng chức năng forgot password: phân biệt email tồn tại/không tồn tại qua thời gian response. Email tồn tại → server gửi mail (chậm hơn) → có thể đoán."
+    },
+    {
+      "id": "em-04",
+      "title": "Unsubscribe / unverify without authentication",
+      "severity": "MEDIUM",
+      "description": "Kiểm tra link unsubscribe / hủy xác thực email có yêu cầu auth không. Nếu chỉ cần click link không cần đăng nhập → attacker có thể hủy đăng ký email của người khác."
+    },
+    {
+      "id": "em-05",
+      "title": "Email SMTP relay (open relay)",
+      "severity": "HIGH",
+      "description": "Kiểm tra mail server có bị cấu hình open relay không (cho phép relay email từ domain bất kỳ). Test bằng cách gửi EHLO + MAIL FROM domain ngoài scope."
+    },
+    {
+      "id": "em-06",
+      "title": "Predictable email verification token",
+      "severity": "HIGH",
+      "description": "Phân tích token trong link xác thực email: có phải sequential, timestamp-based, hoặc encode thông tin user không. Token phải random đủ entropy."
+    }
+  ]
+}

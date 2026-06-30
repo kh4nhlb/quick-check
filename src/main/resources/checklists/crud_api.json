@@ -1,0 +1,73 @@
+{
+  "id": "crud_api",
+  "name": "CRUD API Testing",
+  "group": "feature",
+  "items": [
+    {
+      "id": "crud-01",
+      "title": "Mass assignment",
+      "severity": "HIGH",
+      "description": "Thêm field không được document vào request body: role, isAdmin, verified, balance, ownerId. Kiểm tra server có bind và lưu các field không mong muốn không."
+    },
+    {
+      "id": "crud-02",
+      "title": "Update in invalid state",
+      "severity": "HIGH",
+      "description": "Cập nhật bản ghi đang ở trạng thái không được phép cập nhật: sửa đơn hàng đã hoàn thành, sửa hóa đơn đã thanh toán. Kiểm tra state machine có validate không."
+    },
+    {
+      "id": "crud-03",
+      "title": "Delete in invalid state",
+      "severity": "HIGH",
+      "description": "Xóa bản ghi đang ở trạng thái không được phép xóa: xóa đơn hàng đang xử lý, xóa account đang có giao dịch pending."
+    },
+    {
+      "id": "crud-04",
+      "title": "Race condition on create",
+      "severity": "HIGH",
+      "description": "Gửi đồng thời nhiều request tạo bản ghi có unique constraint (đặt hàng, đăng ký slot). Kiểm tra server có duplicate entry không do race condition."
+    },
+    {
+      "id": "crud-05",
+      "title": "Arbitrary role / restricted field assignment",
+      "severity": "CRITICAL",
+      "description": "Tạo/cập nhật role hoặc field không được phép tùy ý: thêm role=admin khi tạo user, thêm permission khi tạo nhóm."
+    },
+    {
+      "id": "crud-06",
+      "title": "Client-side value tampering",
+      "severity": "HIGH",
+      "description": "Chỉnh sửa giá trị bị chặn trên UI (disabled field, hidden field) nhưng vẫn gửi được qua API: price, status, createdBy."
+    },
+    {
+      "id": "crud-07",
+      "title": "Soft delete bypass",
+      "severity": "MEDIUM",
+      "description": "Kiểm tra bản ghi đã soft delete có thể được truy cập/restore bởi user không có quyền. Thử gọi GET/PUT trực tiếp bằng ID của bản ghi đã xóa."
+    },
+    {
+      "id": "crud-08",
+      "title": "Business quota / limit bypass",
+      "severity": "HIGH",
+      "description": "Vượt ngoài giới hạn nghiệp vụ: số lượng nhân viên, chi nhánh, sản phẩm, project. Kiểm tra limit có được enforce ở server không."
+    },
+    {
+      "id": "crud-09",
+      "title": "Read-only / computed field update",
+      "severity": "HIGH",
+      "description": "Update field chỉ được tính tự động hoặc readonly: createdAt, ownerId, balance, totalOrder, rating. Server phải ignore những field này trong request."
+    },
+    {
+      "id": "crud-10",
+      "title": "Bulk operation with mixed ownership",
+      "severity": "HIGH",
+      "description": "Bulk update/delete trộn ID hợp lệ của mình với ID của người khác trong cùng 1 request. Kiểm tra server có filter ra ID không có quyền hay xử lý hết."
+    },
+    {
+      "id": "crud-related",
+      "title": "Related vulnerability categories",
+      "severity": "INFO",
+      "description": "Tham khảo thêm:\n- Authorization & Access Control Testing (IDOR, privilege escalation)\n- Injection Testing (SQLi/NoSQLi trong filter/sort)\n- Rate Limiting & DoS Testing (bulk abuse)\n- Business Logic Flaw Testing"
+    }
+  ]
+}

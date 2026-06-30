@@ -1,0 +1,43 @@
+{
+  "id": "host_header",
+  "name": "Host Header Injection Testing",
+  "group": "vulnerability",
+  "items": [
+    {
+      "id": "hh-01",
+      "title": "Host header injection",
+      "severity": "HIGH",
+      "description": "Thay Host header thành domain attacker kiểm soát. Kiểm tra ứng dụng có dùng Host header để generate URL (link reset password, link trong email) không → password reset poisoning."
+    },
+    {
+      "id": "hh-02",
+      "title": "Password reset poisoning via Host",
+      "severity": "CRITICAL",
+      "description": "Khi request reset password, thay Host: attacker.com. Nếu server dùng Host để tạo link reset → email user chứa link trỏ tới server attacker → steal reset token."
+    },
+    {
+      "id": "hh-03",
+      "title": "X-Forwarded-Host injection",
+      "severity": "HIGH",
+      "description": "Thêm header X-Forwarded-Host: attacker.com hoặc X-Host, X-Forwarded-Server. Nếu server trust các header này hơn Host → có thể bypass kiểm tra Host hoặc poison link."
+    },
+    {
+      "id": "hh-04",
+      "title": "Duplicate Host header",
+      "severity": "MEDIUM",
+      "description": "Gửi 2 Host header: Host: legit.com và Host: attacker.com. Server và middleware có thể xử lý khác nhau (HTTP Request Smuggling side-channel)."
+    },
+    {
+      "id": "hh-05",
+      "title": "SSRF via Host header",
+      "severity": "HIGH",
+      "description": "Nếu server dùng Host header để kết nối tới service backend, thay Host thành địa chỉ IP nội bộ để khai thác SSRF."
+    },
+    {
+      "id": "hh-06",
+      "title": "Cache poisoning via Host header",
+      "severity": "HIGH",
+      "description": "Inject Host header độc hại, response được cache với nội dung độc (URL phía attacker). User khác request cùng path nhận được cached response với URL attacker."
+    }
+  ]
+}

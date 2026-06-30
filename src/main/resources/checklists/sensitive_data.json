@@ -1,0 +1,67 @@
+{
+  "id": "sensitive_data",
+  "name": "Sensitive Data Exposure Testing",
+  "group": "feature",
+  "items": [
+    {
+      "id": "sd-01",
+      "title": "PII not masked in response",
+      "severity": "HIGH",
+      "description": "Kiểm tra thông tin nhạy cảm có bị mask không: CMND hiện đủ hay che phần giữa, số thẻ hiện đủ hay chỉ 4 số cuối, SĐT/email hiện đủ hay che một phần."
+    },
+    {
+      "id": "sd-02",
+      "title": "Sensitive data in response (hash, token, PII of others)",
+      "severity": "CRITICAL",
+      "description": "Kiểm tra response có trả về: password hash, internal token, API key, dữ liệu PII của user khác trong các API list/detail."
+    },
+    {
+      "id": "sd-03",
+      "title": "Sensitive data in error message",
+      "severity": "MEDIUM",
+      "description": "Gửi request sai để trigger lỗi. Kiểm tra error message có lộ: stack trace, SQL query, tên class, đường dẫn file, biến nội bộ không."
+    },
+    {
+      "id": "sd-04",
+      "title": "Hardcoded secrets in JS / source code",
+      "severity": "CRITICAL",
+      "description": "Tìm kiếm trong JS bundle, source map: API key, JWT secret, password, endpoint nội bộ. Dùng tool như truffleHog, SecretFinder, hoặc search thủ công."
+    },
+    {
+      "id": "sd-05",
+      "title": "Sensitive data in GET params / URL",
+      "severity": "HIGH",
+      "description": "Kiểm tra token, password, API key, session ID có xuất hiện trong URL không. URL bị log ở server, proxy, browser history và lộ qua Referer header."
+    },
+    {
+      "id": "sd-06",
+      "title": "Sensitive data in localStorage / sessionStorage",
+      "severity": "HIGH",
+      "description": "Kiểm tra localStorage và sessionStorage trong DevTools. Thông tin nhạy cảm (token, PII) không nên lưu ở đây vì XSS có thể đọc được."
+    },
+    {
+      "id": "sd-07",
+      "title": "Backup / config file exposure",
+      "severity": "CRITICAL",
+      "description": "Kiểm tra file nhạy cảm trên web: .env, .git, *.sql, *.bak, *.zip, web.config, application.properties, config.php. Dùng dirsearch với wordlist backup-files."
+    },
+    {
+      "id": "sd-08",
+      "title": "Autocomplete on sensitive form fields",
+      "severity": "LOW",
+      "description": "Kiểm tra form password, thẻ ngân hàng có attribute autocomplete=off không. Autocomplete bật có thể lộ thông tin nếu thiết bị bị người khác dùng."
+    },
+    {
+      "id": "sd-09",
+      "title": "Weak encryption / encoding mistaken as encryption",
+      "severity": "HIGH",
+      "description": "Kiểm tra dữ liệu 'mã hóa' thực chất chỉ là Base64 (decode được ngay). Kiểm tra thuật toán mã hóa: MD5, SHA1 cho password là yếu. AES ECB mode là yếu."
+    },
+    {
+      "id": "sd-related",
+      "title": "Related vulnerability categories",
+      "severity": "INFO",
+      "description": "Tham khảo thêm:\n- Client-Side Testing (localStorage, JS bundle, autocomplete)"
+    }
+  ]
+}

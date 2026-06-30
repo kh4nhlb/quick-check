@@ -1,0 +1,49 @@
+{
+  "id": "ssrf",
+  "name": "Server-Side Request Forgery (SSRF) Testing",
+  "group": "vulnerability",
+  "items": [
+    {
+      "id": "ssrf-01",
+      "title": "Basic SSRF via URL param",
+      "severity": "CRITICAL",
+      "description": "Thay URL trong param (url, webhook, callback, imageUrl, endpoint) bằng Burp Collaborator URL để xác nhận server gửi request ra ngoài."
+    },
+    {
+      "id": "ssrf-02",
+      "title": "Internal metadata access (cloud)",
+      "severity": "CRITICAL",
+      "description": "Trỏ SSRF tới cloud metadata: http://169.254.169.254/latest/meta-data/ (AWS), http://metadata.google.internal/ (GCP), http://169.254.169.254/metadata/instance (Azure). Có thể lấy IAM credentials."
+    },
+    {
+      "id": "ssrf-03",
+      "title": "Internal service enumeration",
+      "severity": "HIGH",
+      "description": "Dùng SSRF để scan port nội bộ: http://127.0.0.1:8080, http://10.0.0.1:3306. Phân biệt port mở/đóng dựa trên response time, content, hoặc HTTP status."
+    },
+    {
+      "id": "ssrf-04",
+      "title": "SSRF via alternative schemes",
+      "severity": "CRITICAL",
+      "description": "Thử các scheme không phải http/https:\n- file:///etc/passwd (đọc file local)\n- dict://127.0.0.1:11211/ (interact Memcached)\n- gopher:// (craft raw HTTP/SMTP request)\n- ftp:// (scan nội bộ)\nKiểm tra filter có block hết các scheme không."
+    },
+    {
+      "id": "ssrf-05",
+      "title": "SSRF via redirect chain",
+      "severity": "HIGH",
+      "description": "Server follow redirect: trỏ tới URL attacker kiểm soát, URL đó redirect về 127.0.0.1 hoặc dải IP nội bộ. Bypass filter không check URL sau redirect."
+    },
+    {
+      "id": "ssrf-06",
+      "title": "SSRF filter bypass via encoding",
+      "severity": "HIGH",
+      "description": "Bypass IP blacklist bằng:\n- Hex: 0x7f000001 (= 127.0.0.1)\n- Decimal: 2130706433\n- Octal: 0177.0.0.1\n- IPv6: ::1, ::ffff:127.0.0.1\n- DNS rebinding trỏ về internal IP"
+    },
+    {
+      "id": "ssrf-07",
+      "title": "Blind SSRF detection",
+      "severity": "HIGH",
+      "description": "Không có response nhưng server vẫn gửi request. Phát hiện bằng out-of-band: Burp Collaborator, interactsh. Thử trên feature: webhook, report gửi email, PDF render URL."
+    }
+  ]
+}

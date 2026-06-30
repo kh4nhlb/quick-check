@@ -1,0 +1,115 @@
+{
+  "id": "register_login",
+  "name": "Register/Login & Forgot/Change/Reset Password Testing",
+  "group": "feature",
+  "items": [
+    {
+      "id": "rl-01",
+      "title": "User enumeration",
+      "severity": "MEDIUM",
+      "description": "So sánh response/timing khi nhập sai username vs sai password. Response phải đồng nhất để không lộ tài khoản tồn tại hay không."
+    },
+    {
+      "id": "rl-02",
+      "title": "Account lockout",
+      "severity": "HIGH",
+      "description": "Brute force sai password nhiều lần (10, 20, 50 lần). Kiểm tra có lockout không, lockout sau bao nhiêu lần, có thể bypass bằng IP rotation không."
+    },
+    {
+      "id": "rl-03",
+      "title": "Default credentials",
+      "severity": "CRITICAL",
+      "description": "Thử đăng nhập với credential mặc định: admin/admin, admin/password, admin/123456, test/test. Áp dụng cho cả tài khoản hệ thống và tài khoản được tạo tự động."
+    },
+    {
+      "id": "rl-04",
+      "title": "Weak password policy",
+      "severity": "HIGH",
+      "description": "Thử đăng ký với password yếu: 1 ký tự, toàn số, common password (123456, password). Kiểm tra server có enforce policy (độ dài, ký tự đặc biệt, chặn common) không."
+    },
+    {
+      "id": "rl-05",
+      "title": "Login bypass",
+      "severity": "CRITICAL",
+      "description": "Thử các kỹ thuật bypass: SQL injection vào login form, NoSQL injection ({\"$ne\": null}), JWT alg=none, đổi response từ false→true, thêm parameter bổ sung."
+    },
+    {
+      "id": "rl-06",
+      "title": "Weak registration",
+      "severity": "HIGH",
+      "description": "Kiểm tra flow đăng ký: có verify email không, có thể dùng email giả, có thể đăng ký nhiều account cùng email (khác hoa thường, thêm dấu chấm), có thể đăng ký username đặc biệt."
+    },
+    {
+      "id": "rl-07",
+      "title": "Weak forgot/reset password flow",
+      "severity": "HIGH",
+      "description": "Kiểm tra flow reset password: token gửi qua email có thể đoán được không, token có hết hạn không, link reset có giới hạn số lần dùng không."
+    },
+    {
+      "id": "rl-08",
+      "title": "Weak remember me functionality",
+      "severity": "MEDIUM",
+      "description": "Kiểm tra remember me token: có đủ entropy không, có hết hạn không, có bị invalidate khi logout/đổi password không, có phải static/predictable không."
+    },
+    {
+      "id": "rl-09",
+      "title": "Brute force login (thread / IP variation)",
+      "severity": "HIGH",
+      "description": "Brute force với nhiều thread, thay đổi IP (X-Forwarded-For) để bypass lockout per-IP. Test riêng biệt với account lockout để đánh giá chính xác ngưỡng giới hạn."
+    },
+    {
+      "id": "rl-10",
+      "title": "Case-insensitive / whitespace login",
+      "severity": "LOW",
+      "description": "Đăng nhập với username/email không phân biệt hoa-thường (Admin vs admin) hoặc có khoảng trắng thừa (\" admin \"). Có thể gây confusion về identity."
+    },
+    {
+      "id": "rl-11",
+      "title": "Reset token reuse after use",
+      "severity": "HIGH",
+      "description": "Sau khi dùng link reset password để đổi mật khẩu thành công, thử dùng lại link đó. Token phải bị invalidate ngay sau lần dùng đầu tiên."
+    },
+    {
+      "id": "rl-12",
+      "title": "Predictable reset token",
+      "severity": "HIGH",
+      "description": "Phân tích reset token: có phải sequential, timestamp-based, hoặc base64 encode thông tin user không. Token phải là random đủ entropy (≥128 bit)."
+    },
+    {
+      "id": "rl-13",
+      "title": "Reset token not bound to user",
+      "severity": "CRITICAL",
+      "description": "Xin reset token cho account A, dùng token đó để reset password của account B. Token phải được gắn với user cụ thể, không dùng chéo được."
+    },
+    {
+      "id": "rl-14",
+      "title": "Reset link no expiry / too long",
+      "severity": "MEDIUM",
+      "description": "Kiểm tra link reset password có hết hạn sau bao lâu. Link không có expiry hoặc có hiệu lực quá lâu (>24h) là rủi ro nếu email bị compromise."
+    },
+    {
+      "id": "rl-15",
+      "title": "Password reuse allowed",
+      "severity": "LOW",
+      "description": "Đổi mật khẩu mới giống mật khẩu cũ. Hệ thống nên chặn reuse mật khẩu gần đây (ít nhất 3-5 lần trước)."
+    },
+    {
+      "id": "rl-16",
+      "title": "Session not killed after password change",
+      "severity": "HIGH",
+      "description": "Sau khi đổi password, kiểm tra session cũ ở thiết bị khác có bị invalidate không. Phải force logout tất cả session cũ khi đổi password."
+    },
+    {
+      "id": "rl-17",
+      "title": "Remember me token not invalidated on logout / password change",
+      "severity": "MEDIUM",
+      "description": "Logout hoặc đổi password, sau đó dùng lại remember me token cũ. Token phải bị revoke khi logout hoặc khi credential thay đổi."
+    },
+    {
+      "id": "rl-related",
+      "title": "Related vulnerability categories",
+      "severity": "INFO",
+      "description": "Tham khảo thêm:\n- OTP/2FA/MFA/Captcha Testing (xác thực đa nhân tố)\n- Authentication & Session Management Testing (session lifecycle)\n- Injection Testing (SQLi/NoSQLi vào login form)"
+    }
+  ]
+}

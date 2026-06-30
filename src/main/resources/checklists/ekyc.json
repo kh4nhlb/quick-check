@@ -1,0 +1,61 @@
+{
+  "id": "ekyc",
+  "name": "EKYC Testing",
+  "group": "feature",
+  "items": [
+    {
+      "id": "ek-01",
+      "title": "Liveness detection bypass (photo / video)",
+      "severity": "CRITICAL",
+      "description": "Thử bypass liveness bằng ảnh tĩnh in ra, video quay lại màn hình, deepfake video. Hệ thống liveness nên phát hiện các hình thức spoofing 2D."
+    },
+    {
+      "id": "ek-02",
+      "title": "Liveness bypass (3D mask / printed photo)",
+      "severity": "CRITICAL",
+      "description": "Thử bypass bằng mặt nạ 3D hoặc ảnh in 3D. Liveness detection nâng cao cần phân biệt được khuôn mặt thật với vật thể 3D."
+    },
+    {
+      "id": "ek-03",
+      "title": "Fake / altered ID document upload",
+      "severity": "CRITICAL",
+      "description": "Upload ảnh giấy tờ giả hoặc đã chỉnh sửa (photoshop số CMND, ngày sinh, họ tên). Kiểm tra OCR và document authenticity check có phát hiện được không."
+    },
+    {
+      "id": "ek-04",
+      "title": "ID document substitution",
+      "severity": "CRITICAL",
+      "description": "Thay ảnh giấy tờ của người khác (CMND, passport) để xác thực hộ. Kiểm tra có face-match giữa ảnh trên giấy tờ và selfie không."
+    },
+    {
+      "id": "ek-05",
+      "title": "Face-match mismatch still passes",
+      "severity": "CRITICAL",
+      "description": "Gửi ảnh selfie và ảnh giấy tờ của 2 người khác nhau. Face-match score nên dưới ngưỡng accept. Kiểm tra threshold có đủ chặt không."
+    },
+    {
+      "id": "ek-06",
+      "title": "OCR result tampering",
+      "severity": "HIGH",
+      "description": "Sau khi server OCR giấy tờ và trả kết quả (số CMND, họ tên, ngày sinh), sửa các giá trị đó trước khi submit xác nhận. Server không nên trust dữ liệu OCR từ client."
+    },
+    {
+      "id": "ek-07",
+      "title": "eKYC session replay",
+      "severity": "HIGH",
+      "description": "Replay ảnh/video/request eKYC đã verify thành công cho session hoặc account khác. Session eKYC phải được bind với account cụ thể và single-use."
+    },
+    {
+      "id": "ek-08",
+      "title": "Step skip in eKYC flow",
+      "severity": "CRITICAL",
+      "description": "Bỏ qua step liveness hoặc face-match, gọi thẳng API cuối để lấy kết quả verified. Server phải enforce thứ tự và tính hợp lệ của từng step."
+    },
+    {
+      "id": "ek-related",
+      "title": "Related vulnerability categories",
+      "severity": "INFO",
+      "description": "Tham khảo thêm:\n- File Upload Testing (upload ảnh/video giấy tờ)\n- Authorization & Access Control Testing (truy cập kết quả KYC của người khác)\n- Sensitive Data Exposure Testing (lộ thông tin PII)\n- Rate Limiting & DoS Testing (brute force liveness)"
+    }
+  ]
+}

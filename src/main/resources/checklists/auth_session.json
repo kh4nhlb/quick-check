@@ -1,91 +1,73 @@
 {
   "id": "auth_session",
-  "name": "Authentication & Session",
-  "group": "vuln",
+  "name": "Authentication & Session Management Testing",
+  "group": "feature",
   "items": [
     {
-      "id": "auth_001",
-      "title": "JWT - algorithm confusion (none / RS256→HS256)",
+      "id": "as-01",
+      "title": "Unauthenticated access",
       "severity": "CRITICAL",
-      "description": "Thử alg:none để bỏ qua signature. Thử đổi RS256→HS256 rồi sign bằng public key.",
-      "reference": "OWASP API2:2023"
+      "description": "Gửi request không có token/cookie. Endpoint phải trả 401/403, không được trả dữ liệu thật hoặc thực hiện hành động."
     },
     {
-      "id": "auth_002",
-      "title": "JWT - signature không được verify",
+      "id": "as-02",
+      "title": "Weak password policy",
+      "severity": "HIGH",
+      "description": "Kiểm tra password policy: tối thiểu độ dài, yêu cầu ký tự đặc biệt, chặn common password. Test bằng cách đổi sang password yếu (1234, abcd)."
+    },
+    {
+      "id": "as-03",
+      "title": "JWT vulnerabilities",
       "severity": "CRITICAL",
-      "description": "Sửa payload (sub, role) mà không đổi signature. Nếu server vẫn chấp nhận → không verify.",
-      "reference": "OWASP API2:2023"
+      "description": "Kiểm tra các kỹ thuật tấn công JWT:\n- alg=none bypass\n- Weak secret brute force (HS256)\n- RS256→HS256 algorithm confusion\n- kid header injection\n- jku/x5u header injection\nDùng jwt_tool để test tổng hợp."
     },
     {
-      "id": "auth_003",
-      "title": "JWT - exp không được kiểm tra",
+      "id": "as-04",
+      "title": "Cookie security attributes",
       "severity": "HIGH",
-      "description": "Dùng token đã hết hạn. Kiểm tra server có từ chối không.",
-      "reference": "OWASP API2:2023"
+      "description": "Kiểm tra cookie có đủ thuộc tính:\n- HttpOnly (chặn XSS đọc cookie)\n- Secure (chỉ gửi qua HTTPS)\n- SameSite=Strict/Lax (chống CSRF)"
     },
     {
-      "id": "auth_004",
-      "title": "JWT - claim nhạy cảm bị tin tưởng từ payload",
-      "severity": "HIGH",
-      "description": "Sửa claim role/isAdmin/scope trong payload. Server không được tin payload mà phải lookup DB.",
-      "reference": "OWASP API2:2023"
-    },
-    {
-      "id": "auth_005",
-      "title": "Brute force - không có rate limit / lockout",
-      "severity": "HIGH",
-      "description": "Gửi nhiều request login sai liên tiếp. Kiểm tra có bị block/lockout không.",
-      "reference": "OWASP API4:2023"
-    },
-    {
-      "id": "auth_006",
-      "title": "MFA bypass - skip bước xác thực OTP",
-      "severity": "HIGH",
-      "description": "Sau khi login thành công bước 1, thử gọi thẳng endpoint step 3 bỏ qua OTP. Kiểm tra server enforce flow không.",
-      "reference": "OWASP API2:2023"
-    },
-    {
-      "id": "auth_007",
-      "title": "OAuth - state parameter thiếu (CSRF on OAuth flow)",
-      "severity": "HIGH",
-      "description": "Kiểm tra callback URL có validate state param không. Nếu thiếu → có thể CSRF hijack OAuth.",
-      "reference": "OWASP API2:2023"
-    },
-    {
-      "id": "auth_008",
-      "title": "OAuth - redirect_uri open redirect / bypass",
-      "severity": "HIGH",
-      "description": "Thử thêm ký tự: redirect_uri=https://legit.com@evil.com, legit.com%2Fevil. Kiểm tra whitelist có chặt không.",
-      "reference": "OWASP API2:2023"
-    },
-    {
-      "id": "auth_009",
-      "title": "Session không bị invalidate sau logout",
-      "severity": "HIGH",
-      "description": "Logout rồi dùng lại session token/cookie cũ. Server phải revoke server-side.",
-      "reference": "OWASP API2:2023"
-    },
-    {
-      "id": "auth_010",
-      "title": "Password reset token có thể đoán / dùng lại",
-      "severity": "HIGH",
-      "description": "Kiểm tra token reset có đủ entropy không, có expiry không, dùng 1 lần hay nhiều lần.",
-      "reference": "OWASP API2:2023"
-    },
-    {
-      "id": "auth_011",
-      "title": "Refresh token không rotate sau khi dùng",
+      "id": "as-05",
+      "title": "Session timeout",
       "severity": "MEDIUM",
-      "description": "Dùng refresh token lấy access token mới, sau đó dùng lại refresh token cũ. Phải bị từ chối.",
-      "reference": "OWASP API2:2023"
+      "description": "Kiểm tra session có timeout sau khoảng thời gian không hoạt động không. Test bằng cách giữ session inactive rồi thử dùng lại sau 30-60 phút."
     },
     {
-      "id": "auth_012",
-      "title": "Account enumeration qua response khác nhau",
+      "id": "as-06",
+      "title": "Logout invalidates server-side session",
+      "severity": "HIGH",
+      "description": "Sau khi logout, dùng lại token/session cũ để gọi API. Session phải bị invalidate ở server, không chỉ xóa cookie ở client."
+    },
+    {
+      "id": "as-07",
+      "title": "CSRF protection",
+      "severity": "HIGH",
+      "description": "Kiểm tra endpoint thay đổi state có yêu cầu CSRF token không. Thử gửi request cross-origin không có token hoặc với token sai/từ session khác."
+    },
+    {
+      "id": "as-08",
+      "title": "Session fixation",
+      "severity": "HIGH",
+      "description": "Kiểm tra session ID có được regenerate sau khi đăng nhập thành công không. Nếu không, attacker có thể set session ID trước rồi chờ nạn nhân đăng nhập."
+    },
+    {
+      "id": "as-09",
+      "title": "Concurrent session control",
       "severity": "MEDIUM",
-      "description": "So sánh response/thời gian khi login sai username vs sai password. Response phải đồng nhất.",
-      "reference": "OWASP API2:2023"
+      "description": "Đăng nhập cùng tài khoản từ nhiều thiết bị/browser cùng lúc. Kiểm tra hệ thống có giới hạn số session đồng thời hoặc cảnh báo đăng nhập mới không."
+    },
+    {
+      "id": "as-10",
+      "title": "Session token in URL / Referer",
+      "severity": "HIGH",
+      "description": "Kiểm tra session token có bị truyền qua GET parameter không (lộ trong URL, browser history, server log, Referer header khi navigate ra ngoài)."
+    },
+    {
+      "id": "as-related",
+      "title": "Related vulnerability categories",
+      "severity": "INFO",
+      "description": "Tham khảo thêm:\n- Register/Login & Forgot/Change/Reset Password Testing (login flow chi tiết)\n- OTP/2FA/MFA/Captcha Testing (second factor)\n- JWT Vulnerabilities Testing (token-based auth)"
     }
   ]
 }

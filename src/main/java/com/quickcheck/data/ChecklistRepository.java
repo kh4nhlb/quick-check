@@ -13,8 +13,18 @@ import java.util.*;
 public class ChecklistRepository {
 
     private static final String[] BUILTIN_ORDER = {
-        "broken_access", "auth_session", "injection",
-        "security_misconfig", "file_resource", "business_logic", "rate_dos"
+        // Test trên hầu hết mọi API
+        "auth_session", "broken_access", "injection", "sensitive_data", "error_handling", "rate_dos",
+        // Rất phổ biến, hầu hết project
+        "register_login", "crud_api", "business_logic", "client_side", "otp_2fa", "open_redirect",
+        // Feature-specific, khá phổ biến
+        "file_upload", "ssrf", "payment_logic", "email_function", "websocket", "xxe",
+        // Ít phổ biến, một số loại app
+        "path_traversal", "cache", "host_header", "ekyc",
+        // Hiếm gặp, tech-specific
+        "lfi_rfi", "deserialization", "http_smuggling", "framework_specific",
+        // One-time recon
+        "system_wide"
     };
 
     private final Gson gson = new Gson();

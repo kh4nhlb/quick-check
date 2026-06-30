@@ -1,0 +1,43 @@
+{
+  "id": "deserialization",
+  "name": "Deserialization Vulnerabilities Testing",
+  "group": "vulnerability",
+  "items": [
+    {
+      "id": "dsr-01",
+      "title": "Java deserialization (ysoserial)",
+      "severity": "CRITICAL",
+      "description": "Nhận dạng Java serialized object:\n- Hex: bắt đầu bằng AC ED 00 05\n- Base64: bắt đầu bằng rO0AB\nDùng ysoserial để generate payload với gadget chain:\n- CommonsCollections\n- Spring\n- Groovy"
+    },
+    {
+      "id": "dsr-02",
+      "title": "PHP deserialization (unserialize)",
+      "severity": "CRITICAL",
+      "description": "Tìm param chứa PHP serialized string (bắt đầu bằng O:, a:, s:). Craft payload khai thác __wakeup(), __destruct(), __toString() magic method trong class hiện có (PHP Object Injection)."
+    },
+    {
+      "id": "dsr-03",
+      "title": "Python pickle deserialization",
+      "severity": "CRITICAL",
+      "description": "Nếu ứng dụng dùng pickle.loads() để deserialize data từ client (thường trong cookie hoặc session). Tạo pickle payload thực thi os.system() hoặc subprocess."
+    },
+    {
+      "id": "dsr-04",
+      "title": "JSON deserialization type confusion",
+      "severity": "HIGH",
+      "description": "Một số framework JSON deserialize không an toàn: Jackson (enableDefaultTyping), Gson với polymorphism, .NET TypeNameHandling. Thử thêm @class, $type, __type field vào JSON body."
+    },
+    {
+      "id": "dsr-05",
+      "title": "Blind deserialization detection (OAST)",
+      "severity": "HIGH",
+      "description": "Nếu không thấy phản hồi rõ ràng, dùng out-of-band payload: DNS lookup, HTTP callback. ysoserial có module URLDNS để test blind deserialization không cần gadget chain."
+    },
+    {
+      "id": "dsr-06",
+      "title": "NodeJS deserialization (node-serialize)",
+      "severity": "CRITICAL",
+      "description": "Nếu ứng dụng Node dùng node-serialize để deserialize: gửi payload {\"rce\":\"_$$ND_FUNC$$_function(){require('child_process').exec('id',...)}\"}. IIFE trigger ngay khi deserialize."
+    }
+  ]
+}

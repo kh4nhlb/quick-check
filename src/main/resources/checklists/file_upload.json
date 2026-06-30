@@ -1,0 +1,79 @@
+{
+  "id": "file_upload",
+  "name": "File Upload Testing",
+  "group": "feature",
+  "items": [
+    {
+      "id": "fu-01",
+      "title": "Dangerous extension bypass",
+      "severity": "CRITICAL",
+      "description": "Upload file có extension nguy hiểm (.php, .jsp, .aspx) đổi tên thành .jpg/.png. Kiểm tra server có thực thi nội dung file không."
+    },
+    {
+      "id": "fu-02",
+      "title": "Double extension / null byte bypass",
+      "severity": "CRITICAL",
+      "description": "Thử double extension (file.php.jpg) và null byte (file.php%00.jpg) để bypass kiểm tra extension. Một số server chỉ check đuôi cuối cùng hoặc cắt chuỗi ở null byte."
+    },
+    {
+      "id": "fu-03",
+      "title": "MIME type spoofing",
+      "severity": "HIGH",
+      "description": "Đổi Content-Type header thành image/jpeg trong khi giữ nguyên nội dung file nguy hiểm. Kiểm tra server validate theo Content-Type hay theo nội dung thực của file (magic bytes)."
+    },
+    {
+      "id": "fu-04",
+      "title": "SVG / HTML XSS payload",
+      "severity": "HIGH",
+      "description": "Upload file SVG hoặc HTML chứa XSS payload (<script>, <img onerror>). Nếu file được serve từ cùng domain, XSS sẽ thực thi trong context của site."
+    },
+    {
+      "id": "fu-05",
+      "title": "File size limit bypass",
+      "severity": "MEDIUM",
+      "description": "Upload file vượt giới hạn kích thước cho phép để gây DoS (storage đầy, timeout). Kiểm tra limit có được enforce ở server không hay chỉ ở client-side."
+    },
+    {
+      "id": "fu-06",
+      "title": "Path traversal via filename",
+      "severity": "CRITICAL",
+      "description": "Đặt tên file là ../../etc/passwd hoặc ..\\..\\.\\windows\\win.ini. Nếu server không sanitize tên file, có thể ghi đè file tùy ý trên hệ thống."
+    },
+    {
+      "id": "fu-07",
+      "title": "Zip slip",
+      "severity": "CRITICAL",
+      "description": "Upload file ZIP/TAR/RAR chứa entry với path traversal (../../../etc/cron.d/evil). Khi server giải nén, file bị ghi ra ngoài thư mục đích."
+    },
+    {
+      "id": "fu-08",
+      "title": "Predictable storage path / public bucket",
+      "severity": "HIGH",
+      "description": "Kiểm tra file upload được lưu ở đường dẫn có thể đoán được hoặc public bucket (S3, GCS). Nếu có, attacker có thể truy cập file của user khác."
+    },
+    {
+      "id": "fu-09",
+      "title": "Filename collision / file overwrite",
+      "severity": "HIGH",
+      "description": "Upload file trùng tên với file đã tồn tại. Kiểm tra server có overwrite file cũ không. Có thể overwrite file của user khác hoặc file hệ thống."
+    },
+    {
+      "id": "fu-10",
+      "title": "Metadata payload (EXIF, XML)",
+      "severity": "MEDIUM",
+      "description": "Nhúng payload vào metadata EXIF của ảnh hoặc XML bên trong DOCX/PDF/XLSX. Nếu server xử lý metadata, có thể trigger XXE hoặc lộ thông tin khi metadata được render."
+    },
+    {
+      "id": "fu-11",
+      "title": "Race condition (upload vs scan)",
+      "severity": "HIGH",
+      "description": "Gửi nhiều request upload cùng lúc để khai thác window giữa lúc file được lưu và lúc server validate/scan. File nguy hiểm có thể tồn tại tạm thời và truy cập được."
+    },
+    {
+      "id": "fu-related",
+      "title": "Related vulnerability categories",
+      "severity": "INFO",
+      "description": "Tham khảo thêm:\n- Path Traversal Testing\n- XML External Entities (XXE) Testing (XML trong file upload)\n- Sensitive Data Exposure Testing (metadata lộ thông tin)\n- Authorization & Access Control Testing (quyền upload/đọc file)"
+    }
+  ]
+}

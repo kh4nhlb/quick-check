@@ -1,0 +1,43 @@
+{
+  "id": "open_redirect",
+  "name": "Open Redirect Testing",
+  "group": "vulnerability",
+  "items": [
+    {
+      "id": "or-01",
+      "title": "Open redirect via redirect_uri / next / url param",
+      "severity": "MEDIUM",
+      "description": "Thay redirect_uri, next, url, return_to, goto bằng URL bên ngoài: https://evil.com. Kiểm tra server có whitelist domain không."
+    },
+    {
+      "id": "or-02",
+      "title": "Protocol-relative redirect",
+      "severity": "MEDIUM",
+      "description": "Thử giá trị: //evil.com, //evil.com/path. Một số filter chỉ check scheme (https://) mà bỏ sót protocol-relative URL."
+    },
+    {
+      "id": "or-03",
+      "title": "Encoded / obfuscated URL bypass",
+      "severity": "MEDIUM",
+      "description": "Bypass whitelist domain bằng:\n- URL encode: %68%74%74%70%73://evil.com\n- Double encode: %2568%2574%2574%2570%2573://\n- @-sign trick: https://target.com@evil.com\n- IP decimal: http://2130706433 (= 127.0.0.1)\n- Subdomain trick: https://target.com.evil.com"
+    },
+    {
+      "id": "or-04",
+      "title": "Open redirect to XSS (javascript: scheme)",
+      "severity": "HIGH",
+      "description": "Thử redirect tới javascript:alert(1). Nếu ứng dụng thực hiện redirect qua JS (location.href = param), có thể leo thang lên XSS."
+    },
+    {
+      "id": "or-05",
+      "title": "Header injection via redirect",
+      "severity": "MEDIUM",
+      "description": "Chèn CRLF vào giá trị redirect: /redirect?url=https://target.com%0d%0aSet-Cookie:session=evil. Có thể dùng để inject header vào response."
+    },
+    {
+      "id": "or-06",
+      "title": "OAuth redirect_uri validation bypass",
+      "severity": "CRITICAL",
+      "description": "Trong OAuth flow, thử các bypass cho redirect_uri: thêm path (https://legit.com.evil.com/), thêm subdomain, thay domain tương tự. Nếu vượt qua → code/token OAuth bị leak."
+    }
+  ]
+}

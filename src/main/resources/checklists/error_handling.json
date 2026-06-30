@@ -1,0 +1,49 @@
+{
+  "id": "error_handling",
+  "name": "Error Handling & Stack Traces Testing",
+  "group": "vulnerability",
+  "items": [
+    {
+      "id": "err-01",
+      "title": "Stack trace / exception exposed",
+      "severity": "HIGH",
+      "description": "Gửi request sai format, thiếu param, dữ liệu không hợp lệ. Kiểm tra response có trả về stack trace Java/Python/Node, tên class, line number không."
+    },
+    {
+      "id": "err-02",
+      "title": "SQL query exposed in error",
+      "severity": "CRITICAL",
+      "description": "Trigger lỗi SQL bằng input sai (ký tự đặc biệt, type sai). Nếu error message chứa SQL query → lộ cấu trúc database và xác nhận SQL injection."
+    },
+    {
+      "id": "err-03",
+      "title": "Internal path / filename disclosed",
+      "severity": "MEDIUM",
+      "description": "Kiểm tra error response có chứa đường dẫn nội bộ server không: /var/www/html/app.php line 42, C:\\inetpub\\wwwroot\\app.dll."
+    },
+    {
+      "id": "err-04",
+      "title": "Internal IP / hostname in response",
+      "severity": "MEDIUM",
+      "description": "Kiểm tra response header và error body có chứa IP nội bộ, tên hostname, tên service nội bộ không. Thường lộ qua header X-Powered-By, Server, X-AspNet-Version."
+    },
+    {
+      "id": "err-05",
+      "title": "Verbose 404 / 405 / 500 page",
+      "severity": "LOW",
+      "description": "Kiểm tra các trang lỗi 404, 405, 500 có expose thông tin về framework, version, danh sách route, hoặc debug info không."
+    },
+    {
+      "id": "err-06",
+      "title": "Inconsistent error message reveals existence",
+      "severity": "MEDIUM",
+      "description": "So sánh error message khi resource không tồn tại vs khi resource tồn tại nhưng không có quyền. Nên trả cùng 1 message để tránh user enumeration."
+    },
+    {
+      "id": "err-07",
+      "title": "Debug endpoint / debug parameter active",
+      "severity": "HIGH",
+      "description": "Kiểm tra các endpoint debug: /debug, /actuator, /metrics, /trace, /env, /__debug__. Thêm param ?debug=true, ?verbose=1, ?trace=1 vào request thông thường."
+    }
+  ]
+}

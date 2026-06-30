@@ -1,0 +1,55 @@
+{
+  "id": "client_side",
+  "name": "Client-Side Testing",
+  "group": "feature",
+  "items": [
+    {
+      "id": "cs-01",
+      "title": "DOM-based XSS",
+      "severity": "HIGH",
+      "description": "Kiểm tra JavaScript xử lý dữ liệu từ URL hash/param và đưa vào DOM: innerHTML, eval, document.write, $.html(). Dùng DOM Invader (Burp) hoặc tìm source/sink thủ công."
+    },
+    {
+      "id": "cs-02",
+      "title": "Sensitive data in localStorage / sessionStorage",
+      "severity": "HIGH",
+      "description": "Mở DevTools → Application → Storage. Token, session ID, PII không nên lưu ở đây vì XSS có thể đọc toàn bộ storage của domain."
+    },
+    {
+      "id": "cs-03",
+      "title": "Client-side only validation",
+      "severity": "HIGH",
+      "description": "Tắt JavaScript hoặc dùng Burp để bypass validation phía client. Logic validate (giá trị min/max, format, permission) phải được enforce lại ở server."
+    },
+    {
+      "id": "cs-04",
+      "title": "Clickjacking",
+      "severity": "MEDIUM",
+      "description": "Kiểm tra X-Frame-Options hoặc CSP frame-ancestors có được set không. Tạo PoC iframe nhúng trang target, kiểm tra có bị block không."
+    },
+    {
+      "id": "cs-05",
+      "title": "postMessage origin not validated",
+      "severity": "HIGH",
+      "description": "Tìm event listener window.addEventListener('message', ...) trong JS. Kiểm tra có validate event.origin không. Nếu không → attacker có thể gửi message từ domain khác."
+    },
+    {
+      "id": "cs-06",
+      "title": "Source map exposure",
+      "severity": "MEDIUM",
+      "description": "Kiểm tra các file .js có kèm sourceMappingURL không. Download file .map tương ứng để xem source code gốc (TypeScript, React) của ứng dụng."
+    },
+    {
+      "id": "cs-07",
+      "title": "Hardcoded API key / secret in JS bundle",
+      "severity": "CRITICAL",
+      "description": "Search trong JS bundle (DevTools → Sources hoặc download) các từ khóa: apiKey, secret, token, password, api_key, Authorization. Dùng SecretFinder extension."
+    },
+    {
+      "id": "cs-related",
+      "title": "Related vulnerability categories",
+      "severity": "INFO",
+      "description": "Tham khảo thêm:\n- Injection Testing (XSS stored/reflected)\n- Sensitive Data Exposure Testing (localStorage, hardcoded secrets)\n- CRUD API Testing (client-side validation bypass)"
+    }
+  ]
+}

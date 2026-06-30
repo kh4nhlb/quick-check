@@ -1,63 +1,73 @@
 {
   "id": "rate_dos",
-  "name": "Rate Limiting & DoS",
-  "group": "vuln",
+  "name": "Rate Limiting & DoS Testing",
+  "group": "vulnerability",
   "items": [
     {
-      "id": "rate_001",
-      "title": "Không có rate limit trên endpoint auth (login, OTP, reset)",
+      "id": "rd-01",
+      "title": "Rate limit on auth endpoints",
       "severity": "HIGH",
-      "description": "Gửi 100+ request login/OTP liên tiếp. Không bị block → brute force khả thi.",
-      "reference": "OWASP API4:2023"
+      "description": "Gửi nhiều request liên tục tới login/register/forgot password/change password. Kiểm tra có bị throttle hoặc block sau N lần không."
     },
     {
-      "id": "rate_002",
-      "title": "Không có rate limit trên action nhạy cảm",
-      "severity": "MEDIUM",
-      "description": "Gửi nhiều request tới endpoint send-email, send-sms, create-account. Kiểm tra có bị giới hạn không.",
-      "reference": "OWASP API4:2023"
-    },
-    {
-      "id": "rate_003",
-      "title": "Bypass rate limit qua header spoofing",
+      "id": "rd-02",
+      "title": "Rate limit on other critical endpoints",
       "severity": "HIGH",
-      "description": "Thêm X-Forwarded-For, X-Real-IP, X-Originating-IP với giá trị khác nhau để spoof IP, bypass rate limit per-IP.",
-      "reference": "OWASP API4:2023"
+      "description": "Kiểm tra rate limit trên endpoint nhạy cảm: export, report, transfer, send notification. Test bằng cách gửi bulk request liên tục."
     },
     {
-      "id": "rate_004",
-      "title": "Large payload - không giới hạn kích thước request",
-      "severity": "MEDIUM",
-      "description": "Gửi body JSON/XML rất lớn (10MB+). Kiểm tra server có reject trước khi parse không hay bị OOM.",
-      "reference": "OWASP API4:2023"
+      "id": "rd-03",
+      "title": "Race condition",
+      "severity": "HIGH",
+      "description": "Gửi nhiều request đồng thời (parallel) cho cùng một hành động: đặt hàng, dùng voucher, rút tiền. Dùng Burp Intruder (null payload) hoặc Turbo Intruder."
     },
     {
-      "id": "rate_005",
-      "title": "Deep nested JSON / array bomb",
+      "id": "rd-04",
+      "title": "Email / SMS spam",
       "severity": "MEDIUM",
-      "description": "Gửi JSON lồng nhau 100+ cấp hoặc array chứa triệu phần tử. Có thể gây stack overflow hoặc CPU spike khi parse.",
-      "reference": "OWASP API4:2023"
+      "description": "Trigger gửi email/SMS nhiều lần liên tục: OTP, thông báo, invite. Không có rate limit có thể tốn phí SMS gateway hoặc gây phiền nhiễu user."
     },
     {
-      "id": "rate_006",
-      "title": "ReDoS - regex phức tạp trên input không giới hạn",
+      "id": "rd-05",
+      "title": "Pagesize / offset limit",
       "severity": "MEDIUM",
-      "description": "Nếu server validate bằng regex phức tạp, gửi string dài với pattern khai thác backtracking.",
-      "reference": "OWASP API4:2023"
+      "description": "Thử pageSize=100000 hoặc offset âm. Kiểm tra server có giới hạn tối đa hay trả về toàn bộ dataset, gây tải DB và lộ dữ liệu."
     },
     {
-      "id": "rate_007",
-      "title": "Thiếu timeout trên operation tốn tài nguyên",
-      "severity": "MEDIUM",
-      "description": "Gửi query phức tạp (search, filter, aggregation) và giữ kết nối. Kiểm tra server có timeout không.",
-      "reference": "OWASP API4:2023"
+      "id": "rd-06",
+      "title": "OTP rate limit",
+      "severity": "HIGH",
+      "description": "Gửi request resend OTP liên tục. Kiểm tra có giới hạn số lần resend, có cooldown. Thử brute force OTP: không giới hạn số lần verify → có thể brute force 6 chữ số."
     },
     {
-      "id": "rate_008",
-      "title": "Graphql - query batching / introspection gây DoS",
+      "id": "rd-07",
+      "title": "Account unlock abuse",
       "severity": "MEDIUM",
-      "description": "Gửi batch query với hàng trăm operation cùng lúc. Gửi deeply nested fragment để gây amplification.",
-      "reference": "OWASP API4:2023"
+      "description": "Sau khi account bị lock, kiểm tra cơ chế unlock. Thử bypass lockout bằng cách liên tục trigger unlock rồi brute force lại ngay sau khi mở khóa."
+    },
+    {
+      "id": "rd-08",
+      "title": "Rate limit bypass via IP / UA rotation",
+      "severity": "HIGH",
+      "description": "Bypass rate limit bằng:\n- Đổi header IP: X-Forwarded-For, X-Real-IP, X-Client-IP, CF-Connecting-IP\n- Thử IP private/localhost: 127.0.0.1, 0.0.0.0\n- Đổi User-Agent\n- Thêm header ngẫu nhiên để thay đổi fingerprint"
+    },
+    {
+      "id": "rd-09",
+      "title": "Storage DoS via large file upload",
+      "severity": "MEDIUM",
+      "description": "Upload file rất lớn liên tục để làm đầy storage/disk. Kiểm tra có limit kích thước file và quota per-user không."
+    },
+    {
+      "id": "rd-10",
+      "title": "Resource-intensive endpoint abuse",
+      "severity": "HIGH",
+      "description": "Gửi request liên tục tới endpoint nặng CPU/DB: export CSV/Excel lớn, full-text search, generate report, PDF render. Có thể làm chậm hoặc crash server."
+    },
+    {
+      "id": "rd-11",
+      "title": "Bulk API abuse",
+      "severity": "HIGH",
+      "description": "Gửi batch/bulk request với số lượng item cực lớn trong 1 request: bulk create 10000 items, bulk delete, bulk send notification. Kiểm tra có giới hạn số item trong 1 batch không."
     }
   ]
 }

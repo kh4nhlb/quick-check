@@ -1,0 +1,49 @@
+{
+  "id": "websocket",
+  "name": "Websocket Testing",
+  "group": "feature",
+  "items": [
+    {
+      "id": "ws-01",
+      "title": "Missing auth on WebSocket handshake",
+      "severity": "CRITICAL",
+      "description": "Kết nối WebSocket không kèm token/session. Server phải xác thực token ngay khi upgrade HTTP→WebSocket, không chỉ sau khi kết nối thành công."
+    },
+    {
+      "id": "ws-02",
+      "title": "Cross-Site WebSocket Hijacking (CSWSH)",
+      "severity": "HIGH",
+      "description": "Kiểm tra handshake có validate Origin header không. Nếu không, tạo page độc hại để kết nối WS thay mặt nạn nhân (tương tự CSRF cho WebSocket)."
+    },
+    {
+      "id": "ws-03",
+      "title": "Injection via WebSocket message",
+      "severity": "HIGH",
+      "description": "Gửi payload injection qua WS message: SQLi, XSS, SSTI, Command Injection. Message payload không được validate/sanitize kỹ như HTTP request thông thường."
+    },
+    {
+      "id": "ws-04",
+      "title": "Per-message authorization missing",
+      "severity": "HIGH",
+      "description": "Authorization chỉ check 1 lần lúc connect, không check lại cho từng message/action. Thử gửi message thực hiện hành động của user khác hoặc admin sau khi connect."
+    },
+    {
+      "id": "ws-05",
+      "title": "Unencrypted WebSocket (ws:// instead of wss://)",
+      "severity": "HIGH",
+      "description": "Kiểm tra ứng dụng có dùng ws:// thay vì wss:// không. Dữ liệu truyền qua ws:// không mã hóa, dễ bị MITM intercept."
+    },
+    {
+      "id": "ws-06",
+      "title": "No rate limit on WebSocket messages",
+      "severity": "MEDIUM",
+      "description": "Gửi message liên tục qua WS connection với tốc độ cao. Kiểm tra có giới hạn số message/giây không, có thể gây DoS server hoặc flood channel."
+    },
+    {
+      "id": "ws-related",
+      "title": "Related vulnerability categories",
+      "severity": "INFO",
+      "description": "Tham khảo thêm:\n- Injection Testing (SQLi/XSS trong message payload)\n- Authorization & Access Control Testing (per-message auth)\n- Sensitive Data Exposure Testing (dữ liệu nhạy cảm qua ws://)"
+    }
+  ]
+}

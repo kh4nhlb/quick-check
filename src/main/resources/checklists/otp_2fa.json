@@ -1,0 +1,85 @@
+{
+  "id": "otp_2fa",
+  "name": "OTP/2FA/MFA/Captcha Testing",
+  "group": "feature",
+  "items": [
+    {
+      "id": "otp-01",
+      "title": "Brute force OTP / Captcha",
+      "severity": "CRITICAL",
+      "description": "Brute force OTP 4-6 số (10.000 - 1.000.000 khả năng) bằng Intruder. Không giới hạn số lần thử → có thể đoán được. Tương tự với Captcha nếu validate ở server."
+    },
+    {
+      "id": "otp-02",
+      "title": "OTP reuse (used or expired)",
+      "severity": "HIGH",
+      "description": "Dùng lại OTP đã sử dụng hoặc đã hết hạn. OTP phải bị invalidate ngay sau lần dùng đầu tiên và sau khi hết thời gian sống."
+    },
+    {
+      "id": "otp-03",
+      "title": "OTP step bypass",
+      "severity": "CRITICAL",
+      "description": "Sau khi nhập đúng password bước 1, gọi thẳng API tạo session (bước 3) bỏ qua bước verify OTP (bước 2). Server phải enforce thứ tự flow."
+    },
+    {
+      "id": "otp-04",
+      "title": "Session / request ID swap for OTP",
+      "severity": "HIGH",
+      "description": "Đổi requestId/sessionId/verificationToken trong request verify OTP bằng ID của session khác. Kiểm tra OTP có được gắn với đúng session không."
+    },
+    {
+      "id": "otp-05",
+      "title": "Unlimited OTP resend",
+      "severity": "HIGH",
+      "description": "Gửi request resend OTP liên tục không có rate limit → spam SMS/email tốn phí. Kiểm tra có cooldown (30s, 60s) và giới hạn tổng số lần resend không."
+    },
+    {
+      "id": "otp-06",
+      "title": "Old OTP still valid after resend",
+      "severity": "MEDIUM",
+      "description": "Xin resend OTP, kiểm tra OTP cũ có còn valid không. Khi resend, OTP cũ phải bị invalidate; chỉ OTP mới nhất mới được chấp nhận."
+    },
+    {
+      "id": "otp-07",
+      "title": "OTP lifetime too long",
+      "severity": "MEDIUM",
+      "description": "Kiểm tra thời gian sống của OTP. OTP giao dịch nên có hiệu lực ≤3-5 phút; OTP xác thực email ≤15-30 phút. OTP tồn tại quá lâu tăng nguy cơ brute force và replay."
+    },
+    {
+      "id": "otp-08",
+      "title": "2FA bypass after login",
+      "severity": "CRITICAL",
+      "description": "Sau khi nhập đúng password, gọi thẳng API tạo session mà không qua bước 2FA. Kiểm tra server có một session state 'half-authenticated' và enforce bước 2FA không."
+    },
+    {
+      "id": "otp-09",
+      "title": "Disable 2FA without re-auth",
+      "severity": "HIGH",
+      "description": "Thử disable/remove 2FA mà không cần xác thực lại (nhập password hiện tại). Thao tác nhạy cảm như tắt 2FA phải yêu cầu re-authentication."
+    },
+    {
+      "id": "otp-10",
+      "title": "Captcha token reuse",
+      "severity": "HIGH",
+      "description": "Giải captcha một lần, lấy token, dùng lại token đó cho nhiều request khác nhau. Captcha token phải là single-use và expire nhanh."
+    },
+    {
+      "id": "otp-11",
+      "title": "Submit without captcha token",
+      "severity": "HIGH",
+      "description": "Gọi thẳng API submit form mà không gửi captcha token hoặc gửi giá trị rỗng/null. Nếu vẫn pass → captcha không được validate ở server."
+    },
+    {
+      "id": "otp-12",
+      "title": "OTP race condition",
+      "severity": "HIGH",
+      "description": "Gửi nhiều request verify OTP đồng thời với các giá trị khác nhau. Race condition có thể cho phép bypass giới hạn tần suất hoặc validate nhiều lần cùng lúc."
+    },
+    {
+      "id": "otp-related",
+      "title": "Related vulnerability categories",
+      "severity": "INFO",
+      "description": "Tham khảo thêm:\n- Rate Limiting & DoS Testing (brute force, resend spam)\n- Authentication & Session Management Testing (session state sau 2FA)\n- Authorization & Access Control Testing (step bypass)"
+    }
+  ]
+}
